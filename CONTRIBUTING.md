@@ -3,7 +3,7 @@
 ## Começando
 
 ```bash
-npm install          # instala e cria os symlinks dos @thenajs/*
+npm install          # instala e cria os symlinks dos @harness-js/*
 npm run build        # tsc -b, na ordem correta
 npm test             # 246 testes, contra o código-fonte (não precisa de build)
 ```
@@ -74,7 +74,7 @@ Nomeie a classe, o parâmetro **e o conserto**:
 
 ```ts
 throw new Error(
-  `[thena] @state() em ${onde} (parâmetro ${indice}): nenhum estado ` +
+  `[harness] @state() em ${onde} (parâmetro ${indice}): nenhum estado ` +
   `declarado. Acrescente \`state: MinhaClasse\` no @Workflow.`,
 );
 ```
@@ -121,7 +121,7 @@ já está lá e por quê.
 
 ## Publicação
 
-Os pacotes vão para o **npm público** (scope `@thenajs`, org npm `thenajs`) pela
+Os pacotes vão para o **npm público** (scope `@harness-js`, org npm `harness-js`) pela
 Action [`publish.yml`](.github/workflows/publish.yml), disparada por uma tag
 `v*`:
 
@@ -157,4 +157,4 @@ lado. O workspace continua verde porque resolve para o irmão local: o defeito s
 existe no pacote publicado.
 
 Pré-requisito: secret **`NPM_TOKEN`** (npm automation token com acesso à org
-`thenajs`) no repositório.
+`harness-js`) no repositório.

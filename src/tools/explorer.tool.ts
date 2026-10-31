@@ -1,4 +1,4 @@
-import { Tool, WorkflowRuntime, input } from "@thenajs/core";
+import { Tool, WorkflowRuntime, input } from "@harness-js/core";
 import { z } from "zod";
 import { ExploreWorkflow } from "../workflows/explore.workflow.js";
 

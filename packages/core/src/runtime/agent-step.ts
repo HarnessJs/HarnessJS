@@ -1,4 +1,4 @@
-import type { Message, PipelineContext, Step } from "@thenajs/agentflow";
+import type { Message, PipelineContext, Step } from "@harness-js/agentflow";
 import { getAgentMetadata } from "../decorators/metadata.js";
 import { CONSTRUCTOR, pointsOf } from "../decorators/inject.js";
 import { resolveMemory, resolveProvider } from "../di/resolve.js";
@@ -256,20 +256,7 @@ export function buildAgentStep(
          */
         const modelContext = await contract.build(contractCtx);
 
-        /*
-         * Message[] é enviado diretamente.
-         *
-         * Qualquer outro resultado é serializado e vira
-         * uma única mensagem user.
-         */
-        const messages: Message[] = isMessageArray(modelContext)
-          ? modelContext
-          : [
-              {
-                role: "user",
-                content: serializeContractOutput(modelContext, agentName),
-              },
-            ];
+        const messages = contractMessages(modelContext, agentName);
 
         const invocation: ChatInvocation = {
           messages,
@@ -391,17 +378,104 @@ function isMessageArray(value: unknown): value is Message[] {
   );
 }
 
-function serializeContractOutput(value: unknown, agentName: string): string {
+/**
+ * Converte o retorno de `AgentContract.build()` nas mensagens do provider.
+ *
+ * - `Message[]` segue sem transformação.
+ * - Objeto: `instructions` vira o `system`; todo valor que é `Message[]` vira
+ *   turnos de verdade, na ordem das chaves; o resto vira seções `<chave>`. A
+ *   ordem das chaves é a ordem do contexto: seções declaradas antes da
+ *   conversa entram no `system`, as declaradas depois vão numa mensagem `user`
+ *   ao final. Sem turnos, todas vão numa mensagem `user`, para o modelo ter a
+ *   que responder.
+ * - Qualquer outro valor vira uma única mensagem `user`.
+ *
+ * A posição é do contrato, não do framework, porque é ela que decide o cache
+ * de prompt: o provider reaproveita o prefixo idêntico ao da chamada anterior,
+ * então o que muda a cada turno (documentos de uma busca, por exemplo) no topo
+ * invalida o cache da conversa inteira, e depois dela não invalida nada.
+ *
+ * O objeto inteiro em `JSON.stringify` numa mensagem `user` foi a versão
+ * anterior: o prompt perdia o papel `system`, o history virava texto escapado e
+ * as chamadas de tool deixavam de ser turnos que o provider reconhece. Os turnos
+ * são reconhecidos pelo valor, não pelo nome da chave, para que `history`,
+ * `conversation` ou qualquer outro nome escolhido pelo contrato funcionem.
+ */
+function contractMessages(value: unknown, agentName: string): Message[] {
+  if (isMessageArray(value)) return value;
+  if (!isPlainObject(value)) {
+    return [{ role: "user", content: serializeContractOutput(value, agentName) }];
+  }
+
+  let instructions = "";
+  const turns: Message[] = [];
+  const before: string[] = [];
+  const after: string[] = [];
+
+  for (const [key, field] of Object.entries(value)) {
+    if (key === "instructions" && typeof field === "string") {
+      instructions = field;
+    } else if (isMessageArray(field)) {
+      turns.push(...field);
+    } else {
+      const text = renderSection(field, agentName);
+      // `turns.length`, e não "já passou por uma chave Message[]": um
+      // `memory: []` vazio também passa no `isMessageArray` e não é conversa.
+      if (text) (turns.length ? after : before).push(`<${key}>\n${text}\n</${key}>`);
+    }
+  }
+
+  const messages: Message[] = [];
+  if (turns.length) {
+    const system = [instructions, ...before].filter(Boolean).join("\n\n");
+    if (system) messages.push({ role: "system", content: system });
+    messages.push(...turns);
+    if (after.length) messages.push({ role: "user", content: after.join("\n\n") });
+  } else {
+    if (instructions) messages.push({ role: "system", content: instructions });
+    if (before.length) messages.push({ role: "user", content: before.join("\n\n") });
+  }
+
+  if (!messages.length) {
+    throw new TypeError(
+      `[harness] Contract for agent "${agentName}" returned an object with nothing to send to the model. ` +
+        "Return instructions, a Message[] value or at least one non-empty field.",
+    );
+  }
+  return messages;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null) return false;
+  const proto = Object.getPrototypeOf(value) as unknown;
+  return proto === Object.prototype || proto === null;
+}
+
+/** Texto de uma seção; vazio quando o campo não tem nada a dizer ao modelo. */
+function renderSection(field: unknown, agentName: string): string {
+  if (field === undefined || field === null) return "";
+  if (typeof field === "string") return field;
+  if (Array.isArray(field) && field.every((item) => typeof item === "string")) {
+    return field.join("\n");
+  }
+  return serializeContractOutput(field, agentName, 2);
+}
+
+function serializeContractOutput(
+  value: unknown,
+  agentName: string,
+  indent?: number,
+): string {
   if (typeof value === "string") return value;
   try {
-    const serialized = JSON.stringify(value);
+    const serialized = JSON.stringify(value, null, indent);
     if (serialized === undefined) {
       throw new TypeError("build() returned a value that JSON cannot represent");
     }
     return serialized;
   } catch (error) {
     throw new TypeError(
-      `[thena] Contract for agent "${agentName}" returned a value that could not be serialized.`,
+      `[harness] Contract for agent "${agentName}" returned a value that could not be serialized.`,
       { cause: error },
     );
   }

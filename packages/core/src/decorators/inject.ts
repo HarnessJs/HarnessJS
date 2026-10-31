@@ -1,4 +1,4 @@
-import type { VectorStoreCtor } from "@thenajs/agentflow";
+import type { VectorStoreCtor } from "@harness-js/agentflow";
 import { resolveContext } from "../run-view.js";
 import type { Context, RunData } from "../types.js";
 

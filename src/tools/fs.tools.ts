@@ -1,6 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { z } from "zod";
-import type { ToolType } from "@thenajs/core";
+import type { ToolType } from "@harness-js/core";
 
 /**
  * Tool em **formato de objeto** — o outro jeito de declarar uma tool, ao lado da

@@ -1,4 +1,4 @@
-import { Agent, DefaultAgentContract } from "@thenajs/core";
+import { Agent, DefaultAgentContract } from "@harness-js/core";
 import { LocalOllamaProvider } from "../../providers/ollama.provider.js";
 
 @Agent({

@@ -1,4 +1,4 @@
-import { Providers, VectorMemory } from "@thenajs/agentflow";
+import { Providers, VectorMemory } from "@harness-js/agentflow";
 import { currentRun } from "../run-context.js";
 import type { ProviderCtor, ProviderFactory, ProviderInput } from "../types.js";
 
@@ -30,7 +30,7 @@ export function resolveProvider(input: ProviderInput): Providers {
   // de factory e morreria com a mesma mensagem enganosa de antes.
   if (/^class[\s{]/.test(Function.prototype.toString.call(fn))) {
     throw new Error(
-      `[thena] ${fn.name || "The provider"} looks like a provider class but does ` +
+      `[harness] ${fn.name || "The provider"} looks like a provider class but does ` +
         `not extend Providers. Extend the base class, or pass an instance.`,
     );
   }
@@ -40,7 +40,7 @@ export function resolveProvider(input: ProviderInput): Providers {
 
 /**
  * Monta as memórias vetoriais injetadas no construtor do agente, **na ordem em
- * que os stores foram registrados** no `ThenaConfig`.
+ * que os stores foram registrados** no `HarnessConfig`.
  *
  * Os stores são compartilhados por toda a aplicação — uma conexão e um
  * `ensureCollection` cada, independente de quantos agentes existem. O `embed()`

@@ -125,7 +125,7 @@ function scheduleIndex(base: string, resumo: RunSummary): void {
 
 /** Report é observabilidade: um erro de I/O aqui não derruba a run. */
 function warnIndexFailure(err: unknown): void {
-  console.error(`[thena] Could not update the report index:`, err);
+  console.error(`[harness] Could not update the report index:`, err);
 }
 
 /**
@@ -394,7 +394,7 @@ function renderHtml(root: ExecutionNode): string {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ThenaJS Report — ${esc(root.name)}</title>
+<title>HarnessJS Report — ${esc(root.name)}</title>
 <style>
   :root { color-scheme: light dark; }
   * { box-sizing: border-box; }
@@ -434,7 +434,7 @@ function renderHtml(root: ExecutionNode): string {
 <body>
   <div class="wrap">
     <h1>${esc(root.name)}</h1>
-    <div class="sub">ThenaJS · report de execução · ${esc(when)}</div>
+    <div class="sub">HarnessJS · report de execução · ${esc(when)}</div>
     <div class="stats">${stats}</div>
     ${tree}
   </div>
@@ -462,7 +462,7 @@ function renderIndice(runs: RunSummary[]): string {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ThenaJS Reports</title>
+<title>HarnessJS Reports</title>
 <style>
   :root { color-scheme: light dark; }
   * { box-sizing: border-box; }
@@ -483,7 +483,7 @@ function renderIndice(runs: RunSummary[]): string {
 <body>
   <div class="wrap">
     <h1>Execuções</h1>
-    <div class="sub">ThenaJS · ${runs.length} run${runs.length === 1 ? "" : "s"}</div>
+    <div class="sub">HarnessJS · ${runs.length} run${runs.length === 1 ? "" : "s"}</div>
     ${lines || '<div class="vazio">Nenhuma execução registrada.</div>'}
   </div>
 </body>

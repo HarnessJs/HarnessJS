@@ -1,4 +1,4 @@
-import { Workflow, loop } from "@thenajs/core";
+import { Workflow, loop } from "@harness-js/core";
 import { ExplorerAgent } from "../agents/explorer/explorer.agent.js";
 import { PlannerAgent } from "../agents/planner/planner.agent.js";
 import { ReviewerAgent } from "../agents/reviewer/reviewer.agent.js";

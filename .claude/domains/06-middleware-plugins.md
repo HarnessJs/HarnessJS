@@ -15,12 +15,12 @@ concerns; let user code participate in both.
 | `packages/core/src/middleware/tool.ts` | `recordTool`, `toolHooks`, `countTool`, `toolErrorPolicy`, `toolChain` |
 | `packages/core/src/middleware/chat.ts` | `recordChat`, `countChat`, `chatChain` |
 | `packages/core/src/middleware/context-window.ts` | `contextWindow` — history trimming |
-| `packages/core/src/plugin.ts` | `ThenaPlugin` |
+| `packages/core/src/plugin.ts` | `HarnessPlugin` |
 
 ## Public API
 
 Types `Middleware`, `ToolMiddleware`, `ToolInvocation`, `ChatMiddleware`,
-`ChatInvocation`, `ThenaPlugin`, `ContextWindowOptions`; function
+`ChatInvocation`, `HarnessPlugin`, `ContextWindowOptions`; function
 `contextWindow`.
 
 ## Depends on

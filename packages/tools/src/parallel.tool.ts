@@ -1,5 +1,5 @@
-import { Tool, input, toToolOutput, tools } from "@thenajs/core";
-import type { ToolOutput, ToolType } from "@thenajs/core";
+import { Tool, input, toToolOutput, tools } from "@harness-js/core";
+import type { ToolOutput, ToolType } from "@harness-js/core";
 import { z } from "zod";
 
 /**

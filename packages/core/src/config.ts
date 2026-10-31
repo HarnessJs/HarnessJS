@@ -1,4 +1,4 @@
-import type { VectorStoreCtor } from "@thenajs/agentflow";
+import type { VectorStoreCtor } from "@harness-js/agentflow";
 import type { ExecutionEvent } from "./observability/recorder.js";
 import type { RedactConfig } from "./observability/redact.js";
 
@@ -27,8 +27,8 @@ export interface ReportOptions {
  */
 export type LogConfig = boolean | "verbose" | ((event: ExecutionEvent) => void);
 
-/** Configuração opcional passada ao `Thena.create`. */
-export interface ThenaConfig {
+/** Configuração opcional passada ao `Harness.create`. */
+export interface HarnessConfig {
   /**
    * Gera um report da execução (HTML + JSON) ao final da run, estilo Playwright.
    * `true` usa os defaults; um objeto permite ajustar pasta/formato.
@@ -48,7 +48,7 @@ export interface ThenaConfig {
    * construtor dos agentes.
    *
    * ```ts
-   * export const config: ThenaConfig = {
+   * export const config: HarnessConfig = {
    *     stores: [QdrantNomic, QdrantOpenAI],
    * };
    *

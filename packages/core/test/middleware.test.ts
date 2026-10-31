@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { FatalToolError, Thena } from "@thenajs/core";
-import type { ChatMiddleware, ExecutionNode, ToolMiddleware } from "@thenajs/core";
+import { FatalToolError, Harness } from "@harness-js/core";
+import type { ChatMiddleware, ExecutionNode, ToolMiddleware } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -46,7 +46,7 @@ describe("middleware de tool", () => {
     };
 
     const { Fluxo } = fluxoComTool();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "espia", tool: espia });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -63,7 +63,7 @@ describe("middleware de tool", () => {
       return "da tool";
     });
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "cache", tool: cache });
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
@@ -89,7 +89,7 @@ describe("middleware de tool", () => {
       { beforeTool: (call: any) => ({ ...call, args: { x: "reescrito" } }) },
     );
 
-    const app = Thena.create(makeWorkflow([Agente]), {});
+    const app = Harness.create(makeWorkflow([Agente]), {});
     await app.use({ name: "auditor", tool: auditor });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -100,7 +100,7 @@ describe("middleware de tool", () => {
   });
 
   it("um curto-circuito NÃO conta no orçamento", async () => {
-    const { loop, untilAnswered } = await import("@thenajs/core");
+    const { loop, untilAnswered } = await import("@harness-js/core");
     let acertos = 0;
     const cache: ToolMiddleware = async () => {
       acertos++;
@@ -122,7 +122,7 @@ describe("middleware de tool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "cache", tool: cache });
     const saida = await app.run({
       prompt: "vai",
@@ -143,7 +143,7 @@ describe("middleware de tool", () => {
     };
     const { Fluxo } = fluxoComTool();
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "authz", tool: nega });
 
     await expect(app.run({ prompt: "vai" })).rejects.toThrow("sem permissão");
@@ -157,7 +157,7 @@ describe("middleware de tool", () => {
     });
     const { Fluxo } = fluxoComTool();
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "authz", tool: nega });
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
@@ -177,7 +177,7 @@ describe("middleware de tool", () => {
       };
 
     const { Fluxo } = fluxoComTool();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "a", tool: mark("a") });
     await app.use({ name: "b", tool: mark("b") });
     await app.run({ prompt: "vai" });
@@ -194,7 +194,7 @@ describe("middleware de chat", () => {
       assistant: { role: "assistant", content: "do cache" },
     });
 
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
     await app.use({ name: "cache", chat: cache });
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
@@ -216,7 +216,7 @@ describe("middleware de chat", () => {
       };
     };
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([
         makeAgent({ provider }),
         makeAgent({ provider }),
@@ -238,14 +238,14 @@ describe("middleware de chat", () => {
 describe("inv.meta — o middleware escreve no report", () => {
   it("aparece no nó do chat, ao lado da telemetria do framework", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-mw-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-mw-"));
 
     const cache: ChatMiddleware = async (inv) => {
       inv.meta({ cacheHit: true, key: "abc" });
       return { assistant: { role: "assistant", content: "do cache" } };
     };
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: new FakeProvider() })]),
       { report: { dir } },
     );
@@ -263,7 +263,7 @@ describe("inv.meta — o middleware escreve no report", () => {
 
   it("o passo continua no report mesmo quando a tool não executa", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-mw-tool-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-mw-tool-"));
 
     const cache: ToolMiddleware = async (inv) => {
       inv.meta({ cacheHit: true });
@@ -271,7 +271,7 @@ describe("inv.meta — o middleware escreve no report", () => {
     };
 
     const { Fluxo } = fluxoComTool();
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.use({ name: "cache", tool: cache });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -290,7 +290,7 @@ describe("inv.meta — o middleware escreve no report", () => {
 
     const { Fluxo } = fluxoComTool();
     // sem `report` nem `log`: o recorder fica inativo
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "cache", tool: cache });
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("do cache");
@@ -310,7 +310,7 @@ describe("herança em run aninhada", () => {
       makeAgent({ provider: new FakeProvider([{ content: "filho" }]) }),
     ]);
 
-    const { Tool, WorkflowRuntime } = await import("@thenajs/core");
+    const { Tool, WorkflowRuntime } = await import("@harness-js/core");
     const SubTool = class {
       constructor(private readonly runtime: any) {}
       execute() {
@@ -323,7 +323,7 @@ describe("herança em run aninhada", () => {
     const providerPai = new FakeProvider([
       { tool: { name: "sub", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: providerPai, tools: [SubTool as never] })]),
       {},
     );

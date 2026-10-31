@@ -53,7 +53,7 @@ export interface ForgetSelector {
 /**
  * Memória vetorial: junta o `embed()` de um provider com um `VectorStore`.
  * É o que o runtime injeta no construtor do agente quando há `memory` no
- * `ThenaConfig`.
+ * `HarnessConfig`.
  *
  * Não confunda com `ctx.state.memory`, que é outra coisa — o bucket `string[]`
  * de contexto durável que vira mensagem `system` no prompt. Este aqui é busca

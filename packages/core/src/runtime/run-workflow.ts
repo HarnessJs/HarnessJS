@@ -1,5 +1,5 @@
-import type { State } from "@thenajs/agentflow";
-import { Pipeline, StateManager } from "@thenajs/agentflow";
+import type { State } from "@harness-js/agentflow";
+import { Pipeline, StateManager } from "@harness-js/agentflow";
 import { getWorkflowMetadata } from "../decorators/metadata.js";
 import {
   childRunContext,
@@ -15,7 +15,7 @@ import { compileStep } from "./compile.js";
 
 /**
  * Executa um único agente. Toda a orquestração (pipeline, estado, contexto)
- * fica no `@thenajs/agentflow`; o framework só monta as peças a partir
+ * fica no `@harness-js/agentflow`; o framework só monta as peças a partir
  * dos metadados do `@Agent`.
  */
 export async function run<T = string>(AgentClass: Function, input: string): Promise<T> {
@@ -91,7 +91,7 @@ export async function runWorkflow<T = string>(
     // A compilação acontece **dentro** do escopo de propósito: `buildAgentStep`
     // instancia provider, tools e agente, e resolve as memórias vetoriais lendo
     // `currentRun().settings`. Compilar fora — como era antes — faria o
-    // `memory` do ThenaConfig ser ignorado em silêncio.
+    // `memory` do HarnessConfig ser ignorado em silêncio.
     pipeline.new(meta.steps.map((s) => compileStep(s, pipeline, workflowState)));
 
     return runCtx.recorder.around("workflow", WorkflowClass.name, async (node) => {

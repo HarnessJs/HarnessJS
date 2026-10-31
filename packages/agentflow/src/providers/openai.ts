@@ -89,6 +89,11 @@ export class OpenAIProvider extends Providers {
       messages: messages.map((m) => this.toOpenAIMessage(m)),
       tools: tools.length ? toFunctionTools(tools) : undefined,
       tool_choice: tools.length ? "auto" : undefined,
+      // Uma tool call por turno é decisão do framework (ADR-025): `chat()` usa
+      // só a primeira. Sem dizer isso à API, o modelo pedia várias de uma vez e
+      // as demais sumiam sem aviso — ele seguia achando que tinham rodado.
+      // Servidor compatível que não aceite o campo: `raw: { parallel_tool_calls: undefined }`.
+      parallel_tool_calls: tools.length ? false : undefined,
       ...this.toOpenAIParams(sampling),
       // O sink é o que liga o streaming. `include_usage` é necessário porque,
       // com `stream: true`, a OpenAI só manda o usage se pedirem — e sem ele o

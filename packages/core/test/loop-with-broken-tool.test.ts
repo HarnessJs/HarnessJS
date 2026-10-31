@@ -6,11 +6,11 @@ import { z } from "zod";
 import {
   DEFAULT_MAX_FAILS,
   DEFAULT_MAX_ITERATIONS,
-  Thena,
+  Harness,
   loop,
   untilAnswered,
-} from "@thenajs/core";
-import type { ExecutionNode, LoopFailure } from "@thenajs/core";
+} from "@harness-js/core";
+import type { ExecutionNode, LoopFailure } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -60,7 +60,7 @@ describe("freios do loop", () => {
     // Nenhum teto declarado: os defaults é que seguram.
     const Fluxo = makeWorkflow([loop({ steps: [Agente], until: untilAnswered })]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "leia" });
     await app.dispose();
 
@@ -76,7 +76,7 @@ describe("freios do loop", () => {
       loop({ steps: [makeAgent({ provider })], until: () => false }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -114,7 +114,7 @@ describe("freios do loop", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "leia" });
     await app.dispose();
 
@@ -151,7 +151,7 @@ describe("freios do loop", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "leia" });
     await app.dispose();
 
@@ -175,7 +175,7 @@ describe("freios do loop", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "leia" });
     await app.dispose();
 
@@ -185,7 +185,7 @@ describe("freios do loop", () => {
 
   it("o report diz por que o loop parou", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-stop-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-stop-"));
     const tentativas = { n: 0 };
     const { Agente } = agenteTeimoso(tentativas);
 
@@ -193,7 +193,7 @@ describe("freios do loop", () => {
       loop({ steps: [Agente], until: untilAnswered, maxFails: 2 }),
     ]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "leia" });
     await app.dispose();
 
@@ -219,7 +219,7 @@ describe("freios do loop", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({
       prompt: "leia",
       // Sem este teto, este teste rodaria para sempre. É o risco que os
@@ -267,7 +267,7 @@ describe("freios do loop", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "leia" });
     await app.dispose();
 

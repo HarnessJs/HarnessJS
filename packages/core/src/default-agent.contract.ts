@@ -1,8 +1,8 @@
-import type { Message } from "@thenajs/agentflow";
+import type { Message } from "@harness-js/agentflow";
 import type { AgentContract, AgentContractContext } from "./types.js";
 
 /**
- * Contrato explícito equivalente à projeção histórica do ThenaJS.
+ * Contrato explícito equivalente à projeção histórica do HarnessJS.
  *
  * Existe para migração e para agentes que querem a convenção pronta sem
  * esconder a decisão: prompt + memory/tasks no system, seguidos do history.

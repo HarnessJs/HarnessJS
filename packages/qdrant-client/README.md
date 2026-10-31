@@ -1,6 +1,6 @@
-# @thenajs/qdrant-client
+# @harness-js/qdrant-client
 
-Cliente [Qdrant](https://qdrant.tech) nativo para [ThenaJS](https://github.com/thenajs/ThenaJS) —
+Cliente [Qdrant](https://qdrant.tech) nativo para [HarnessJS](https://github.com/HarnessJs/HarnessJS) —
 implementação de `VectorStore` sobre a API REST. Sem SDK: `fetch` puro, herdando o retry e o
 timeout do transporte do framework.
 
@@ -10,13 +10,13 @@ timeout do transporte do framework.
 ## Instalação
 
 ```bash
-npm install @thenajs/qdrant-client
+npm install @harness-js/qdrant-client
 ```
 
 ## Uso
 
 ```ts
-import { QdrantStore } from "@thenajs/qdrant-client";
+import { QdrantStore } from "@harness-js/qdrant-client";
 
 export class MeuQdrant extends QdrantStore {
   constructor() {
@@ -32,7 +32,7 @@ export class MeuQdrant extends QdrantStore {
 Registre uma vez no config:
 
 ```ts
-export const config: ThenaConfig = {
+export const config: HarnessConfig = {
   stores: [MeuQdrant],
 };
 ```
@@ -58,7 +58,7 @@ export class Assistente {
 }
 ```
 
-Documentação completa em [thenajs.github.io](https://thenajs.github.io/concepts/memory.html).
+Documentação completa em [harnessjs.github.io](https://harnessjs.github.io/concepts/memory.html).
 
 ## Credentials
 
@@ -66,7 +66,7 @@ Documentação completa em [thenajs.github.io](https://thenajs.github.io/concept
 | --- | --- | --- |
 | `url` | — | Endereço do Qdrant (obrigatório) |
 | `apiKey` | — | Header `api-key`, para Qdrant Cloud |
-| `collection` | `"thena_memory"` | A collection onde tudo é gravado |
+| `collection` | `"harness_memory"` | A collection onde tudo é gravado |
 | `datasetField` | `"dataset"` | Campo do payload que particiona |
 | `retry` | ligado | Política de retry/timeout do `HttpTransport` |
 

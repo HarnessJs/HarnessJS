@@ -13,9 +13,9 @@ import type { ToolMiddleware } from "./middleware/tool.js";
  *   chamada ao modelo, podendo medir, transformar ou curto-circuitar.
  *
  * ```ts
- * const app = Thena.create(MeuWorkflow, config);
+ * const app = Harness.create(MeuWorkflow, config);
  *
- * await app.use(thenaFlow({ port: 4100 }));   // observa
+ * await app.use(harnessFlow({ port: 4100 }));   // observa
  *
  * await app.use({                              // intercepta
  *   name: "cache",
@@ -30,7 +30,7 @@ import type { ToolMiddleware } from "./middleware/tool.js";
  * });
  * ```
  */
-export interface ThenaPlugin {
+export interface HarnessPlugin {
   /** Nome curto, usado em mensagens de erro. */
   name: string;
 

@@ -1,4 +1,4 @@
-import { Agent, DefaultAgentContract, state } from "@thenajs/core";
+import { Agent, DefaultAgentContract, state } from "@harness-js/core";
 import { LocalOllamaProvider } from "../../providers/ollama.provider.js";
 import { ExplorerState } from "../../workflows/explorer.state.js";
 

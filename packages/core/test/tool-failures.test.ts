@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { BudgetExceededError, FatalToolError, Tool, Thena } from "@thenajs/core";
-import type { WorkflowRuntime } from "@thenajs/core";
+import { BudgetExceededError, FatalToolError, Tool, Harness } from "@harness-js/core";
+import type { WorkflowRuntime } from "@harness-js/core";
 import {
   FakeProvider,
   captureError,
@@ -33,7 +33,10 @@ describe("falhas de tool", () => {
     const tool = makeTool({ name: "eco", description: "eco", schema }, () => {
       throw new Error("boom");
     });
-    const app = Thena.create(montar(tool, { name: "eco", arguments: { x: "1" } }), {});
+    const app = Harness.create(
+      montar(tool, { name: "eco", arguments: { x: "1" } }),
+      {},
+    );
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("boom");
     await app.dispose();
@@ -44,14 +47,17 @@ describe("falhas de tool", () => {
       content: "não deu",
       isError: true,
     }));
-    const app = Thena.create(montar(tool, { name: "eco", arguments: { x: "1" } }), {});
+    const app = Harness.create(
+      montar(tool, { name: "eco", arguments: { x: "1" } }),
+      {},
+    );
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("não deu");
     await app.dispose();
   });
 
   it("tool inexistente vira observação", async () => {
-    const app = Thena.create(
+    const app = Harness.create(
       montar(eco(), { name: "nao_existe", arguments: { x: "1" } }),
       {},
     );
@@ -61,7 +67,7 @@ describe("falhas de tool", () => {
   });
 
   it("argumentos fora do schema viram observação, com a mensagem do zod", async () => {
-    const app = Thena.create(
+    const app = Harness.create(
       // o schema pede { x: string }; o modelo mandou { y: 1 }
       montar(eco(), { name: "eco", arguments: { y: 1 } }),
       {},
@@ -81,7 +87,7 @@ describe("falhas de tool", () => {
       { content: '{"name":"eco","arguments":{"y":1}}' },
     ]);
     const Fluxo = makeWorkflow([makeAgent({ provider, tools: [eco()] })]);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     await expect(app.run({ prompt: "vai" })).resolves.toContain(
       "rescued from the response text",
@@ -93,7 +99,10 @@ describe("falhas de tool", () => {
     const tool = makeTool({ name: "eco", description: "eco", schema }, () => {
       throw new FatalToolError("banco indisponível");
     });
-    const app = Thena.create(montar(tool, { name: "eco", arguments: { x: "1" } }), {});
+    const app = Harness.create(
+      montar(tool, { name: "eco", arguments: { x: "1" } }),
+      {},
+    );
 
     await expect(app.run({ prompt: "vai" })).rejects.toBeInstanceOf(FatalToolError);
     await app.dispose();
@@ -104,7 +113,10 @@ describe("falhas de tool", () => {
     const tool = makeTool({ name: "eco", description: "eco", schema }, () => {
       throw new FatalToolError("banco indisponível", { cause: original });
     });
-    const app = Thena.create(montar(tool, { name: "eco", arguments: { x: "1" } }), {});
+    const app = Harness.create(
+      montar(tool, { name: "eco", arguments: { x: "1" } }),
+      {},
+    );
 
     const fail = await app.run({ prompt: "vai" }).catch((e) => e as FatalToolError);
 
@@ -134,7 +146,7 @@ describe("falhas de tool", () => {
       { tool: { name: "ler", arguments: { path: "certo.ts" } } },
       { content: "achei o arquivo" },
     ]);
-    const { loop, untilAnswered } = await import("@thenajs/core");
+    const { loop, untilAnswered } = await import("@harness-js/core");
     const Fluxo = makeWorkflow([
       loop({
         steps: [makeAgent({ provider, tools: [tool] })],
@@ -143,7 +155,7 @@ describe("falhas de tool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "leia o arquivo" });
     await app.dispose();
 
@@ -181,7 +193,7 @@ describe("erros de controle de fluxo não viram observação", () => {
     const Sub = makeWorkflow([makeAgent({ provider: dentro })]);
     const parent = new FakeProvider([{ tool: { name: "sub", arguments: { x: "1" } } }]);
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: parent, tools: [runtimeQueRoda(Sub)] })]),
       {},
     );
@@ -202,7 +214,7 @@ describe("erros de controle de fluxo não viram observação", () => {
     const Sub = makeWorkflow([makeAgent({ provider: dentro })]);
     const parent = new FakeProvider([{ tool: { name: "sub", arguments: { x: "1" } } }]);
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: parent, tools: [runtimeQueRoda(Sub)] })]),
       {},
     );
@@ -227,7 +239,7 @@ describe("erros de controle de fluxo não viram observação", () => {
     Tool({ name: "sub", description: "sub", schema })(Quebrada as never);
 
     const parent = new FakeProvider([{ tool: { name: "sub", arguments: { x: "1" } } }]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: parent, tools: [Quebrada as never] })]),
       {},
     );

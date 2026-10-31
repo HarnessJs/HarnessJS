@@ -22,7 +22,7 @@ const STEP_ONLY_FIELDS = ["state", "output", "turn", "loop", "logs"] as const;
 function runOnlyView(run: RunContext): Context {
   const fail = (field: string) =>
     new Error(
-      `[thena] \`context().${field}\` only exists inside a step. Here the run ` +
+      `[harness] \`context().${field}\` only exists inside a step. Here the run ` +
         `has started but the pipeline has not — this is what happens in a ` +
         `provider factory. Use \`data\`, \`runId\`, \`signal\` or \`usage()\`, ` +
         `which are available from \`run()\` onwards.`,

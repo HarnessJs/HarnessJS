@@ -24,7 +24,7 @@ Re-exported through core: `Pipeline`, `StateManager`, `md`, and the types
 
 ## Depends on
 
-Nothing but `zod` (indirectly, via tools). **Must never import `@thenajs/core`
+Nothing but `zod` (indirectly, via tools). **Must never import `@harness-js/core`
 (R-01).**
 
 ## Invariants
@@ -53,7 +53,7 @@ Nothing but `zod` (indirectly, via tools). **Must never import `@thenajs/core`
 ## Dangerous
 
 - `StateManager.append` throws a bare `"State is not an array."` — one of the
-  few messages without the `[thena]` prefix or a fix hint.
+  few messages without the `[harness]` prefix or a fix hint.
 - `toMessages()` emits the literal `"Tarefas:"` in the system message
   (Portuguese, reaches the model — see CURRENT_STATE.md).
 - Changing the bucket projection changes every prompt every agent sends.

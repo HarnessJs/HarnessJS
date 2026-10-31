@@ -1,13 +1,13 @@
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 import { ExplorerWorkflow } from "./workflows/explorer.workflow.js";
 import { config } from "./config.js";
 
-const app = Thena.create(ExplorerWorkflow, config);
+const app = Harness.create(ExplorerWorkflow, config);
 
 // Para acompanhar a execução ao vivo, num grafo no navegador:
 //
-//   import { thenaFlow } from "@thenajs/flow";
-//   await app.use(thenaFlow());
+//   import { harnessFlow } from "@harness-js/flow";
+//   await app.use(harnessFlow());
 //
 // O site fica em http://127.0.0.1:4100 e segura o processo aberto depois do
 // `run` — encerre com Ctrl+C, ou com `await app.dispose()`.

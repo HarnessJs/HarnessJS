@@ -2,7 +2,7 @@
 
 O `data` de uma execução chegando no provider.
 
-O ThenaJS não tem o conceito de tenant — não existe `tenantId` na API dele. O
+O HarnessJS não tem o conceito de tenant — não existe `tenantId` na API dele. O
 que existe é um canal de dados por execução, que o framework transporta sem
 interpretar. O conceito é seu.
 
@@ -28,7 +28,7 @@ transporta. Declarar a forma é o que dispensa o cast em toda leitura.
 [`src/main.ts`](src/main.ts)
 
 ```ts
-const app = Thena.create<string, DadosDaConta>(AssistantWorkflow, config);
+const app = Harness.create<string, DadosDaConta>(AssistantWorkflow, config);
 
 await app.run({
   input: { message: "Chame a tool quem_sou e repita a resposta dela." },
@@ -101,7 +101,7 @@ varia.
 
 **Dependência local.** Usa `file:../../packages/core` porque depende de
 `context()` e de `run({ data })`, que ainda não foram publicados. Fora do
-repositório, troque por `"@thenajs/core": "^0.9.0"` quando a versão sair.
+repositório, troque por `"@harness-js/core": "^0.9.0"` quando a versão sair.
 
 **CommonJS, como um projeto NestJS.** O `package.json` não tem
 `"type": "module"`, e é isso que permite escrever imports **sem extensão**:
@@ -117,7 +117,7 @@ mesmo motivo.
 O que ela cobra é o `await` de topo: em CommonJS ele não existe, então o
 `main.ts` embrulha tudo numa função — de novo, igual ao `bootstrap()` do Nest.
 
-Os pacotes `@thenajs/*` continuam sendo ESM; o Node moderno permite
+Os pacotes `@harness-js/*` continuam sendo ESM; o Node moderno permite
 `require()` deles a partir de um projeto CommonJS. Por isso o `engines` pede
 **Node ≥ 20.19**, que é quando esse suporte entrou.
 

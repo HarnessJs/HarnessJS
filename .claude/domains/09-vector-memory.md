@@ -6,7 +6,7 @@ Long-term, semantic memory. Distinct from the two other things called "memory".
 
 | Thing | What it is | Lifetime |
 |---|---|---|
-| `ThenaConfig.stores` | The **databases** (`VectorStoreCtor[]`). Renamed from `memory` precisely because of this collision. | app |
+| `HarnessConfig.stores` | The **databases** (`VectorStoreCtor[]`). Renamed from `memory` precisely because of this collision. | app |
 | `VectorMemory` (`@memory()`) | Semantic search: `remember` / `recall` / `forget`. | app |
 | `run({ state })` | Seeds the three buckets. `tasks` and `memory` are projected into the `system` message. **The model reads them.** | run |
 | `ctx.state.memory` | The `string[]` bucket behind the above. | run |
@@ -38,14 +38,14 @@ Working memory is `run({ state }).memory`; long-term memory is `@memory()`.
 
 ## Invariants
 
-- **R-20 — one store instance per app**, created in `Thena.create` and shared by
+- **R-20 — one store instance per app**, created in `Harness.create` and shared by
   every agent: one connection and one `ensureCollection` per store regardless of
   agent count.
 - **`ensureCollectionOnce` is memoized on the store instance.** A second agent
   asking for a different dimension **fails there**, before spending an embedding
   and before the database's own opaque error pointing at the `upsert`. One
   collection holds one vector size.
-- **R-19 — `ThenaConfig.stores` order is a positional contract.** Without
+- **R-19 — `HarnessConfig.stores` order is a positional contract.** Without
   `@memory(Store)`, memories are injected in array order, and TypeScript cannot
   catch a reorder — the parameters have the same type. **Append at the end,
   never in the middle.**
@@ -68,7 +68,7 @@ Working memory is `run({ state }).memory`; long-term memory is `@memory()`.
 
 ## Dangerous
 
-- Reordering `ThenaConfig.stores` silently rewires every agent.
+- Reordering `HarnessConfig.stores` silently rewires every agent.
 - `resolveMemory` reads `currentRun().settings` — only valid inside the run
   scope.
 - `@memory(Store)` matches by `instanceof`, so a store subclass matches its

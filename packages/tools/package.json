@@ -1,15 +1,15 @@
 {
-  "name": "@thenajs/tools",
+  "name": "@harness-js/tools",
   "version": "0.13.1",
-  "description": "Tools prontas para agentes ThenaJS (ex.: ParallelTool).",
+  "description": "Tools prontas para agentes HarnessJS (ex.: ParallelTool).",
   "license": "MIT",
   "author": "castroneto",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenajs/ThenaJS.git",
+    "url": "git+https://github.com/HarnessJs/HarnessJS.git",
     "directory": "packages/tools"
   },
-  "homepage": "https://github.com/thenajs/ThenaJS#readme",
+  "homepage": "https://github.com/HarnessJs/HarnessJS#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -26,7 +26,7 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@thenajs/core": "^0.13.0"
+    "@harness-js/core": "^0.13.0"
   },
   "peerDependencies": {
     "zod": "^4.0.0"

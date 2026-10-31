@@ -21,7 +21,7 @@ export interface TransportCredentials {
 
 /**
  * Transporte HTTP com retry e timeout — a base de tudo que fala com um serviço
- * externo no ThenaJS. `Providers` e `VectorStore` estendem esta classe, então
+ * externo no HarnessJS. `Providers` e `VectorStore` estendem esta classe, então
  * uma implementação própria de qualquer um dos dois herda a política sem código.
  */
 export class HttpTransport {

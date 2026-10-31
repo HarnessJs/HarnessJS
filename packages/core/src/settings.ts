@@ -1,7 +1,7 @@
-import type { VectorStore } from "@thenajs/agentflow";
+import type { VectorStore } from "@harness-js/agentflow";
 
 /**
- * Ajustes de runtime de uma execução, definidos pelo `Thena.create` e
+ * Ajustes de runtime de uma execução, definidos pelo `Harness.create` e
  * transportados no `RunContext`.
  */
 export interface RuntimeSettings {

@@ -1,4 +1,4 @@
-import { Workflow } from "@thenajs/core";
+import { Workflow } from "@harness-js/core";
 import { PlannerAgent } from "../agents/planner/planner.agent.js";
 import { ReviewerAgent } from "../agents/reviewer/reviewer.agent.js";
 

@@ -28,7 +28,9 @@ export function compose<I, O>(
       // melhor do que cobrar duas vezes em silêncio.
       if (n <= last) {
         return Promise.reject(
-          new Error("[thena] next() was called more than once in the same middleware."),
+          new Error(
+            "[harness] next() was called more than once in the same middleware.",
+          ),
         );
       }
       last = n;

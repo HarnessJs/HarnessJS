@@ -5,9 +5,9 @@ import type {
   ToolOutput,
   ToolType,
   State,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 import type { BudgetUsage, RunBudget } from "./budget.js";
-import type { ThenaPlugin } from "./plugin.js";
+import type { HarnessPlugin } from "./plugin.js";
 import type { LogConfig, ReportOptions } from "./config.js";
 import type { RunHandle } from "./run-handle.js";
 
@@ -78,7 +78,7 @@ export interface AgentContract<TOutput = unknown> {
 
 /** Configuração passada para `@Agent({ ... })`. */
 export interface AgentConfig {
-  /** Provider criado/utilizado através do `@thenajs/agentflow`. */
+  /** Provider criado/utilizado através do `@harness-js/agentflow`. */
   provider: ProviderInput;
   /** Tools injetadas para o agente. */
   tools?: ToolInput[];
@@ -160,7 +160,7 @@ export type AgentContractContext<D extends RunData = RunData> = AgentContext<D> 
   readonly input: string;
   readonly memory: readonly string[];
   readonly tasks: readonly string[];
-  readonly history: readonly import("@thenajs/agentflow").Message[];
+  readonly history: readonly import("@harness-js/agentflow").Message[];
 };
 
 /**
@@ -173,7 +173,7 @@ export type AgentContractContext<D extends RunData = RunData> = AgentContext<D> 
  * ```ts
  * type MinhaExecucao = { contaId: string; regiao: string };
  *
- * const app = Thena.create<string, MinhaExecucao>(Fluxo, config);
+ * const app = Harness.create<string, MinhaExecucao>(Fluxo, config);
  * await app.run({ prompt, data: { contaId: "acme", regiao: "sa-east-1" } });
  *
  * context<MinhaExecucao>().data.contaId;   // string, sem cast
@@ -400,7 +400,7 @@ export interface WorkflowMetadata {
 /**
  * Opções de `app.run(...)`.
  *
- * `report` e `log` sobrescrevem o `ThenaConfig` **apenas nesta execução** —
+ * `report` e `log` sobrescrevem o `HarnessConfig` **apenas nesta execução** —
  * possível porque cada run tem o próprio contexto.
  */
 export interface WorkflowRunOptions<D extends RunData = RunData> {
@@ -448,9 +448,9 @@ export interface WorkflowRunOptions<D extends RunData = RunData> {
    * nada é medido nem checado.
    */
   budget?: RunBudget;
-  /** Sobrescreve `ThenaConfig.report` só nesta execução. */
+  /** Sobrescreve `HarnessConfig.report` só nesta execução. */
   report?: boolean | ReportOptions;
-  /** Sobrescreve `ThenaConfig.log` só nesta execução. */
+  /** Sobrescreve `HarnessConfig.log` só nesta execução. */
   log?: LogConfig;
   /**
    * Liga a observação desta execução: `onEvent`/`eventStream` do handle passam
@@ -498,7 +498,7 @@ export interface WorkflowRunOptions<D extends RunData = RunData> {
   data?: D;
 }
 
-/** O que `Thena.create(...)` devolve — o "app" do workflow. */
+/** O que `Harness.create(...)` devolve — o "app" do workflow. */
 export interface WorkflowApp<T = string, D extends RunData = RunData> {
   /**
    * Executa o workflow e devolve a execução, de forma **síncrona**.
@@ -514,7 +514,7 @@ export interface WorkflowApp<T = string, D extends RunData = RunData> {
    * Acopla um observador do stream ao vivo. Vários coexistem, e nenhum toma o
    * lugar do `log` do config. Chame antes do `run`.
    */
-  use(plugin: ThenaPlugin): Promise<WorkflowApp<T, D>>;
+  use(plugin: HarnessPlugin): Promise<WorkflowApp<T, D>>;
   /** Aborta as execuções em voo, espera elas soltarem, e encerra os plugins. */
   dispose(): Promise<void>;
 }

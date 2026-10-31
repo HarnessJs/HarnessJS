@@ -25,27 +25,28 @@ export function consoleLogger(verbose = false): (event: ExecutionEvent) => void 
   return (e) => {
     const indent = "  ".repeat(e.depth);
     if (e.phase === "start") {
-      console.log(`[thena] ${indent}▸ ${label(e)}`);
+      console.log(`[harness] ${indent}▸ ${label(e)}`);
       return;
     }
     const mark = e.status === "error" ? "✗" : "✓";
-    console.log(`[thena] ${indent}◂ ${label(e)}  ${ms(e.durationMs)} ${mark}`);
+    console.log(`[harness] ${indent}◂ ${label(e)}  ${ms(e.durationMs)} ${mark}`);
 
     if (!verbose || !e.data) return;
     const d = e.data;
     if (e.kind === "chat") {
       if (d.toolCall != null)
-        console.log(`[thena] ${indent}  ↳ decisão: ${short(d.toolCall)}`);
+        console.log(`[harness] ${indent}  ↳ decisão: ${short(d.toolCall)}`);
       if (d.response != null && String(d.response).length)
-        console.log(`[thena] ${indent}  ↳ resposta: ${short(d.response)}`);
+        console.log(`[harness] ${indent}  ↳ resposta: ${short(d.response)}`);
     }
     if (e.kind === "tool") {
-      if (d.input != null) console.log(`[thena] ${indent}  ↳ input: ${short(d.input)}`);
+      if (d.input != null)
+        console.log(`[harness] ${indent}  ↳ input: ${short(d.input)}`);
       if (d.output != null)
-        console.log(`[thena] ${indent}  ↳ output: ${short(d.output)}`);
+        console.log(`[harness] ${indent}  ↳ output: ${short(d.output)}`);
     }
     if (e.status === "error" && e.error) {
-      console.log(`[thena] ${indent}  ↳ erro: ${short(e.error)}`);
+      console.log(`[harness] ${indent}  ↳ erro: ${short(e.error)}`);
     }
   };
 }

@@ -1,4 +1,4 @@
-import { Providers, VectorStore } from "@thenajs/agentflow";
+import { Providers, VectorStore } from "@harness-js/agentflow";
 import type {
   CollectionOptions,
   Message,
@@ -10,8 +10,8 @@ import type {
   VectorMatch,
   VectorSearch,
   VectorSelector,
-} from "@thenajs/agentflow";
-import { Agent, DefaultAgentContract, Tool, Workflow } from "@thenajs/core";
+} from "@harness-js/agentflow";
+import { Agent, DefaultAgentContract, Tool, Workflow } from "@harness-js/core";
 import type {
   AgentClass,
   AgentConfig,
@@ -20,7 +20,7 @@ import type {
   ToolConfig,
   ToolInput,
   WorkflowStep,
-} from "@thenajs/core";
+} from "@harness-js/core";
 
 /**
  * Prompt de verdade num arquivo, porque o `@Agent` lê o markdown do disco.

@@ -1,13 +1,13 @@
-# @thenajs/core
+# @harness-js/core
 
-A camada de DX do [ThenaJS](https://github.com/thenajs/ThenaJS): os decorators
+A camada de DX do [HarnessJS](https://github.com/HarnessJs/HarnessJS): os decorators
 `@Agent`, `@Workflow` e `@Tool`, mais o runtime que os executa sobre o
-[`@thenajs/agentflow`](https://www.npmjs.com/package/@thenajs/agentflow).
+[`@harness-js/agentflow`](https://www.npmjs.com/package/@harness-js/agentflow).
 
 É o único pacote que a maioria dos projetos importa.
 
 ```bash
-npm install @thenajs/core zod
+npm install @harness-js/core zod
 ```
 
 > `zod` é **peerDependency**: o schema das suas tools tem que vir da mesma
@@ -24,7 +24,7 @@ src/agents/explorer/
 ```
 
 ```ts
-import { Agent, DefaultAgentContract } from "@thenajs/core";
+import { Agent, DefaultAgentContract } from "@harness-js/core";
 import { LocalOllama } from "../../providers/ollama.provider.js";
 
 @Agent({
@@ -42,7 +42,7 @@ Todo agente declara um contrato. Ele é a única camada que decide o que chega a
 modelo; sem contrato, `@Agent` falha na definição da classe.
 
 ```ts
-import type { AgentContract, AgentContractContext } from "@thenajs/core";
+import type { AgentContract, AgentContractContext } from "@harness-js/core";
 
 class ExplorerContract implements AgentContract {
   async build(ctx: AgentContractContext) {
@@ -64,10 +64,36 @@ class ExplorerContract implements AgentContract {
 export class ExplorerAgent {}
 ```
 
-O retorno pode ser `Message[]`, enviado diretamente ao provider, ou qualquer
-valor serializável em JSON, enviado como uma mensagem `user`. O `build()` pode
-ser assíncrono para consultar banco vetorial, banco relacional ou APIs. Somente
-o que ele retorna chega ao modelo.
+O retorno pode ser `Message[]`, enviado diretamente ao provider, ou um objeto,
+que o framework organiza assim:
+
+- `instructions` vira a mensagem `system`;
+- todo valor que é `Message[]` (`history`, `conversation`, o nome que você
+  escolher) vira os turnos da conversa, com as tools funcionando normalmente;
+- as demais chaves viram seções `<chave>…</chave>`: texto vai como está, lista
+  de textos uma linha por item, o resto em JSON indentado.
+
+A ordem das chaves é a ordem do contexto. Seções declaradas antes da conversa
+entram no `system`; as declaradas depois vão numa mensagem `user` ao final. Sem
+conversa, todas vão numa mensagem `user`.
+
+A posição importa para o cache de prompt: o provider reaproveita o começo
+idêntico ao da chamada anterior. Ponha antes da conversa o que é estável
+(instruções, memória) e depois dela o que muda a cada turno (o resultado de uma
+busca, por exemplo):
+
+```ts
+return {
+  instructions: ctx.prompt,
+  memory: ctx.memory,
+  history: ctx.history,
+  documents: await search(ctx.input),
+};
+```
+
+Qualquer outro valor (uma `string`, por exemplo) vai como uma mensagem `user`.
+O `build()` pode ser assíncrono para consultar banco vetorial, banco relacional
+ou APIs. Somente o que ele retorna chega ao modelo.
 
 Para adotar explicitamente a projeção convencional do framework durante uma
 migração, use `contract: DefaultAgentContract`.
@@ -75,7 +101,7 @@ migração, use `contract: DefaultAgentContract`.
 ## Um workflow
 
 ```ts
-import { Workflow, loop, untilAnswered } from "@thenajs/core";
+import { Workflow, loop, untilAnswered } from "@harness-js/core";
 
 @Workflow({
   steps: [
@@ -87,7 +113,7 @@ export class ExplorerWorkflow {}
 ```
 
 ```ts
-const app = Thena.create(ExplorerWorkflow, { log: true, report: true });
+const app = Harness.create(ExplorerWorkflow, { log: true, report: true });
 console.log(await app.run({ prompt: "Revise o diretório src/" }));
 ```
 
@@ -109,22 +135,22 @@ console.log(await app.run({ prompt: "Revise o diretório src/" }));
 
 **Passos** — `loop`, `parallel`, `untilAnswered`, `calledTool`, `turnOf`, `wasExhausted`
 
-**Execução** — `Thena.create`, `runWorkflow`, `run`, `WorkflowRuntime`
+**Execução** — `Harness.create`, `runWorkflow`, `run`, `WorkflowRuntime`
 
 **Erros** — `FatalToolError`, `BudgetExceededError`
 
-**Extensão** — `ThenaPlugin` com `onEvent` (observar) e `tool` / `chat` (interceptar)
+**Extensão** — `HarnessPlugin` com `onEvent` (observar) e `tool` / `chat` (interceptar)
 
 Os blocos do engine (`Providers`, `OllamaProvider`, `OpenAIProvider`,
 `VectorStore`, `VectorMemory`, `Pipeline`, `StateManager`) são reexportados por
-conveniência — não é preciso depender do `@thenajs/agentflow` diretamente.
+conveniência — não é preciso depender do `@harness-js/agentflow` diretamente.
 
 ## Documentação
 
 A referência completa — hooks, providers próprios, memória vetorial,
 orçamentos, report e as armadilhas conhecidas — está no
-[README do monorepo](https://github.com/thenajs/ThenaJS#readme) e em
-<https://thenajs.github.io>.
+[README do monorepo](https://github.com/HarnessJs/HarnessJS#readme) e em
+<https://harnessjs.github.io>.
 
 ## Requisitos
 

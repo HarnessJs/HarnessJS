@@ -2,8 +2,8 @@ import { mkdtempSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Thena } from "@thenajs/core";
-import type { ExecutionEvent, ExecutionNode } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
+import type { ExecutionEvent, ExecutionNode } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -44,8 +44,8 @@ describe("isolamento entre execuções", () => {
       { content: "l3" },
     ]);
 
-    const curto = Thena.create(fluxoDeTresPassos(providerCurto), {});
-    const longo = Thena.create(fluxoDeTresPassos(providerLongo), {});
+    const curto = Harness.create(fluxoDeTresPassos(providerCurto), {});
+    const longo = Harness.create(fluxoDeTresPassos(providerLongo), {});
 
     const [saidaCurto, saidaLongo] = await Promise.all([
       curto.run({ prompt: "a", budget: { maxChatCalls: 1 } }),
@@ -66,10 +66,10 @@ describe("isolamento entre execuções", () => {
     const eventosA: ExecutionEvent[] = [];
     const eventosB: ExecutionEvent[] = [];
 
-    const appA = Thena.create(fluxoLento(30, "A"), {
+    const appA = Harness.create(fluxoLento(30, "A"), {
       log: (e) => eventosA.push(e),
     });
-    const appB = Thena.create(fluxoLento(5, "B"), {
+    const appB = Harness.create(fluxoLento(5, "B"), {
       log: (e) => eventosB.push(e),
     });
 
@@ -88,13 +88,13 @@ describe("isolamento entre execuções", () => {
   it("runs concorrentes produzem árvores de report separadas", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
-    const dirA = mkdtempSync(join(tmpdir(), "thena-iso-a-"));
-    const dirB = mkdtempSync(join(tmpdir(), "thena-iso-b-"));
+    const dirA = mkdtempSync(join(tmpdir(), "harness-iso-a-"));
+    const dirB = mkdtempSync(join(tmpdir(), "harness-iso-b-"));
 
-    const appA = Thena.create(fluxoLento(30, "resposta A"), {
+    const appA = Harness.create(fluxoLento(30, "resposta A"), {
       report: { dir: dirA },
     });
-    const appB = Thena.create(fluxoLento(10, "resposta B"), {
+    const appB = Harness.create(fluxoLento(10, "resposta B"), {
       report: { dir: dirB },
     });
 
@@ -122,8 +122,8 @@ describe("isolamento entre execuções", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const eventosB: ExecutionEvent[] = [];
-    const appA = Thena.create(fluxoLento(0, "a"), { log: () => {} });
-    const appB = Thena.create(fluxoLento(0, "b"), {
+    const appA = Harness.create(fluxoLento(0, "a"), { log: () => {} });
+    const appB = Harness.create(fluxoLento(0, "b"), {
       log: (e) => eventosB.push(e),
     });
 
@@ -138,7 +138,7 @@ describe("isolamento entre execuções", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const events: ExecutionEvent[] = [];
-    const app = Thena.create(fluxoLento(0, "x"), {
+    const app = Harness.create(fluxoLento(0, "x"), {
       log: (e) => events.push(e),
     });
 

@@ -35,7 +35,7 @@ any change here touches something else.
 
 - **Compilation happens inside the run scope.** `buildAgentStep` instantiates
   the provider, the tools and the agent, and resolves vector memories by reading
-  `currentRun().settings`. Compiling outside made `ThenaConfig` silently
+  `currentRun().settings`. Compiling outside made `HarnessConfig` silently
   ignored. Do not hoist it.
 - **R-07** — checkpoints: start of each agent step, inside each loop's `until`,
   and one final `throwIfAborted` after the pipeline. Without the last one, an

@@ -13,13 +13,13 @@ export function classNameFromAgent(name: string): string {
 }
 
 // --------------------------------------------------------------------------
-// `thena generate agent <nome>` — arquivos de um agente (dentro de um projeto)
+// `harness generate agent <nome>` — arquivos de um agente (dentro de um projeto)
 // --------------------------------------------------------------------------
 
 /** Conteúdo inicial do `<name>.agent.ts` — a classe decorada com @Agent. */
 export function agentTsTemplate(name: string): string {
   const className = classNameFromAgent(name);
-  return `import { Agent } from "@thenajs/core";
+  return `import { Agent } from "@harness-js/core";
 import { LocalOllamaProvider } from "../../providers/ollama.provider";
 import { ${pascal(name)}AgentContract } from "../../contracts/${name}.contract";
 
@@ -38,7 +38,7 @@ export function agentContractTsTemplate(name: string): string {
   return `import type {
   AgentContract,
   AgentContractContext,
-} from "@thenajs/core";
+} from "@harness-js/core";
 
 export class ${pascal(name)}AgentContract implements AgentContract {
   build(ctx: AgentContractContext) {
@@ -63,7 +63,7 @@ Describe here, in natural language, this agent's goal and behaviour.
 }
 
 // --------------------------------------------------------------------------
-// `thena create <nome>` — projeto novo completo
+// `harness create <nome>` — projeto novo completo
 // --------------------------------------------------------------------------
 
 export interface ScaffoldFile {
@@ -71,10 +71,10 @@ export interface ScaffoldFile {
   content: string;
 }
 
-/** Versões dos pacotes @thenajs referenciadas pelo projeto gerado. */
-const THENA_VERSION = "0.13.1";
+/** Versões dos pacotes @harness-js referenciadas pelo projeto gerado. */
+const HARNESS_VERSION = "0.13.1";
 
-/** Todos os arquivos de um projeto ThenaJS novo. */
+/** Todos os arquivos de um projeto HarnessJS novo. */
 export function projectFiles(name: string): ScaffoldFile[] {
   const pkg = {
     name,
@@ -91,7 +91,7 @@ export function projectFiles(name: string): ScaffoldFile[] {
       "start:prod": "node dist/main",
     },
     dependencies: {
-      "@thenajs/core": THENA_VERSION,
+      "@harness-js/core": HARNESS_VERSION,
       zod: "^4.0.0",
     },
     devDependencies: {
@@ -131,7 +131,7 @@ export function projectFiles(name: string): ScaffoldFile[] {
       path: "README.md",
       content: `# ${name}
 
-Projeto ThenaJS. Um assistente pronto para editar.
+Projeto HarnessJS. Um assistente pronto para editar.
 
 ## Rodando
 
@@ -167,12 +167,12 @@ src/
   main.ts                 # ponto de entrada
 \`\`\`
 
-Gere mais agentes com \`thena g agent <nome>\`.
+Gere mais agentes com \`harness g agent <nome>\`.
 `,
     },
     {
       path: "src/main.ts",
-      content: `import { Thena } from "@thenajs/core";
+      content: `import { Harness } from "@harness-js/core";
 import { AssistantWorkflow } from "./workflows/assistant.workflow";
 import { config } from "./config";
 
@@ -180,7 +180,7 @@ const prompt = process.argv.slice(2).join(" ") || "Hello! What do you do?";
 
 async function bootstrap() {
   // \`create\` não é async — quem espera é o \`run\`.
-  const app = Thena.create(AssistantWorkflow, config);
+  const app = Harness.create(AssistantWorkflow, config);
 
   // O \`run\` devolve a saída e propaga o erro — quem imprime é a aplicação.
   console.log(await app.run({ prompt }));
@@ -193,9 +193,9 @@ bootstrap();
     },
     {
       path: "src/config.ts",
-      content: `import type { ThenaConfig } from "@thenajs/core";
+      content: `import type { HarnessConfig } from "@harness-js/core";
 
-export const config: ThenaConfig = {
+export const config: HarnessConfig = {
   // Loga ao vivo o que está sendo executado. Use "verbose" para incluir o
   // conteúdo, ou uma função (event) => void como sink customizado.
   log: true,
@@ -206,7 +206,7 @@ export const config: ThenaConfig = {
     },
     {
       path: "src/providers/ollama.provider.ts",
-      content: `import { OllamaProvider } from "@thenajs/core";
+      content: `import { OllamaProvider } from "@harness-js/core";
 
 /** Ajuste o host/model para o seu ambiente. */
 export class LocalOllamaProvider extends OllamaProvider {
@@ -218,7 +218,7 @@ export class LocalOllamaProvider extends OllamaProvider {
     },
     {
       path: "src/agents/assistant/assistant.agent.ts",
-      content: `import { Agent } from "@thenajs/core";
+      content: `import { Agent } from "@harness-js/core";
 import { LocalOllamaProvider } from "../../providers/ollama.provider";
 import { AssistantAgentContract } from "../../contracts/assistant.contract";
 
@@ -245,7 +245,7 @@ You are a helpful, direct assistant. Answer concisely and to the point.
     },
     {
       path: "src/workflows/assistant.workflow.ts",
-      content: `import { Workflow } from "@thenajs/core";
+      content: `import { Workflow } from "@harness-js/core";
 import { AssistantAgent } from "../agents/assistant/assistant.agent";
 
 @Workflow({

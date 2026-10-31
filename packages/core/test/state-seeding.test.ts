@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Thena, contextWindow } from "@thenajs/core";
+import { Harness, contextWindow } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -11,7 +11,7 @@ import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
  */
 
 const app = (p: FakeProvider) =>
-  Thena.create(makeWorkflow([makeAgent({ provider: p })]), {});
+  Harness.create(makeWorkflow([makeAgent({ provider: p })]), {});
 
 describe("continuar uma conversa", () => {
   it("o segundo turno enxerga o primeiro, com os papéis preservados", async () => {
@@ -100,7 +100,7 @@ describe("continuar uma conversa", () => {
         },
       },
     );
-    const a = Thena.create(makeWorkflow([Quebrado]), {});
+    const a = Harness.create(makeWorkflow([Quebrado]), {});
     const exec = a.run({ prompt: "vai" });
 
     await expect(exec).rejects.toThrow("quebrou");
@@ -120,7 +120,7 @@ describe("por que não é o `memory`", () => {
     }));
 
     const p = new FakeProvider([{ content: "ok" }]);
-    const a = Thena.create(makeWorkflow([makeAgent({ provider: p })]), {});
+    const a = Harness.create(makeWorkflow([makeAgent({ provider: p })]), {});
     await a.use({ name: "janela", chat: contextWindow({ maxTurns: 4 }) });
     await a.run({ prompt: "nova", state: { history: longo } });
     await a.dispose();

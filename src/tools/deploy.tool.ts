@@ -1,5 +1,5 @@
-import { Tool, WorkflowRuntime, context, input } from "@thenajs/core";
-import type { AgentContext } from "@thenajs/core";
+import { Tool, WorkflowRuntime, context, input } from "@harness-js/core";
+import type { AgentContext } from "@harness-js/core";
 import { z } from "zod";
 
 import { DeployWorkflow } from "../workflows/deploy.workflow.js";

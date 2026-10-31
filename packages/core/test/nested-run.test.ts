@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Tool, Thena, runWorkflow } from "@thenajs/core";
-import type { ExecutionNode, WorkflowRuntime } from "@thenajs/core";
+import { Tool, Harness, runWorkflow } from "@harness-js/core";
+import type { ExecutionNode, WorkflowRuntime } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -61,7 +61,7 @@ describe("run aninhada", () => {
   });
 
   it("os nós do sub-workflow aninham sob o nó da tool no report do pai", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "thena-nested-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-nested-"));
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const SubFluxo = makeWorkflow([
@@ -77,7 +77,7 @@ describe("run aninhada", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 

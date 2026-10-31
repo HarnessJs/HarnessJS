@@ -13,7 +13,7 @@ export interface VectorStoreCredentials extends TransportCredentials {
   /**
    * A collection onde tudo é gravado. Uma só por store — bancos vetoriais
    * costumam recomendar partição por campo em vez de muitas collections.
-   * Default: `"thena_memory"`.
+   * Default: `"harness_memory"`.
    */
   collection?: string;
   /** Campo do payload que particiona os datasets. Default: `"dataset"`. */

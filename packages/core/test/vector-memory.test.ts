@@ -1,10 +1,16 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { Agent, DefaultAgentContract, Workflow, Thena, memory } from "@thenajs/core";
-import type { VectorMemory } from "@thenajs/core";
+import {
+  Agent,
+  DefaultAgentContract,
+  Workflow,
+  Harness,
+  memory,
+} from "@harness-js/core";
+import type { VectorMemory } from "@harness-js/core";
 import { FakeProvider, FakeVectorStore, FakeVectorStoreB, PROMPT } from "./harness.js";
 
 /**
- * Memória vetorial: os stores do `ThenaConfig` chegam ao construtor do agente.
+ * Memória vetorial: os stores do `HarnessConfig` chegam ao construtor do agente.
  *
  * Não confundir com `ctx.state.memory`, que é o bucket de texto projetado no
  * prompt — este aqui é busca por similaridade.
@@ -27,7 +33,7 @@ describe("injeção de memória", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       stores: [FakeVectorStore, FakeVectorStoreB],
     });
     await app.run({ prompt: "vai" });
@@ -53,7 +59,7 @@ describe("injeção de memória", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       stores: [FakeVectorStore, FakeVectorStoreB],
     });
     await app.run({ prompt: "vai" });
@@ -76,7 +82,7 @@ describe("injeção de memória", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       stores: [FakeVectorStore, FakeVectorStoreB],
     });
     await app.run({ prompt: "vai" });
@@ -106,7 +112,7 @@ describe("injeção de memória", () => {
     @Workflow({ steps: [A, B] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, { stores: [FakeVectorStore] });
+    const app = Harness.create(Fluxo, { stores: [FakeVectorStore] });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -131,7 +137,7 @@ describe("remember / recall", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, { stores: [FakeVectorStore] });
+    const app = Harness.create(Fluxo, { stores: [FakeVectorStore] });
     await app.run({ prompt: "vai" });
 
     await mem!.remember("um texto qualquer");
@@ -161,7 +167,7 @@ describe("remember / recall", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, { stores: [FakeVectorStore] });
+    const app = Harness.create(Fluxo, { stores: [FakeVectorStore] });
     await app.run({ prompt: "vai" });
 
     await mem!.remember("lembrança", { dataset: "notas" });
@@ -191,7 +197,7 @@ describe("remember / recall", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, { stores: [FakeVectorStore] });
+    const app = Harness.create(Fluxo, { stores: [FakeVectorStore] });
     await app.run({ prompt: "vai" });
 
     await mem!.remember("x");

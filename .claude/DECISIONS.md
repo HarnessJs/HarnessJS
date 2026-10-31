@@ -16,8 +16,8 @@ protocol in TRUTH.md: identify → explain → propose a superseding ADR → wai
 **Context.** Orchestration, model I/O, decorators, dependency injection,
 budgets and reporting all wanted to live in one package.
 
-**Decision.** `@thenajs/agentflow` holds **mechanism** and no policy: pipeline,
-state, providers, HTTP, tool types, vector contracts. `@thenajs/core` holds
+**Decision.** `@harness-js/agentflow` holds **mechanism** and no policy: pipeline,
+state, providers, HTTP, tool types, vector contracts. `@harness-js/core` holds
 **policy** and DX: decorators, DI, run context, middleware, budget,
 observability.
 
@@ -45,7 +45,7 @@ not exist — the tests contaminated one another.
 to change. Everything now depends on staying inside the ALS scope — code that
 escapes it loses the run and `currentRun()` throws. Workflow compilation was
 moved *inside* the scope, because building an agent step reads
-`currentRun().settings`; compiling outside made `ThenaConfig` silently ignored.
+`currentRun().settings`; compiling outside made `HarnessConfig` silently ignored.
 
 ---
 
@@ -301,7 +301,7 @@ dimensions genuinely need different stores, which is why
 
 ---
 
-## ADR-017 — `thena create` generates a CommonJS project
+## ADR-017 — `harness create` generates a CommonJS project
 
 **Status:** accepted · **Changed in 0.9.0**
 
@@ -364,9 +364,9 @@ and it is the stale copy. When documenting something, write it in `docs/`.
 **Decision.** The wire between `FlowServer` and its browser UI — the
 `/api/events` and `/api/runs/:id` routes, the `snapshot` / `run` / `event` SSE
 names, and the `FlowRun` / `FlowSnapshot` payload shapes — is **internal to
-`@thenajs/flow`**. Server and UI are built and published together
+`@harness-js/flow`**. Server and UI are built and published together
 (`prepack: build:ui`), and the documented way to consume the stream from outside
-is `ThenaPlugin.onEvent`, which hands over the core's `ExecutionEvent`. The
+is `HarnessPlugin.onEvent`, which hands over the core's `ExecutionEvent`. The
 protocol is therefore free to change with the package, and its field names now
 follow the core's vocabulary: `startedAt`, `endedAt`, `durationMs`, `running`.
 
@@ -493,7 +493,7 @@ would read as a config option rather than the user's turn.
 
 **Decision.** `Providers.chat` honours **one** tool call per turn —
 `raw.toolCalls?.[0]` — and concurrent tool execution is offered through
-`@thenajs/tools`' `ParallelTool`, which takes a list of sibling calls in its
+`@harness-js/tools`' `ParallelTool`, which takes a list of sibling calls in its
 schema and runs them under `Promise.all`. Native `tool_calls[n]` support is
 **not** planned. This is a design choice, not a pending gap.
 

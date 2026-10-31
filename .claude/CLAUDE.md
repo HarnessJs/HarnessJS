@@ -1,4 +1,4 @@
-# Agent operating manual — ThenaJS
+# Agent operating manual — HarnessJS
 
 You are working on a TypeScript agent framework. This file tells you **how to
 work here**. It is not documentation of the framework; that lives elsewhere and
@@ -11,7 +11,7 @@ Read this file completely before your first tool call in a session.
 ## The four-line summary
 
 npm workspaces monorepo, ESM, TS `strict`, Node >= 20.19. Two layers:
-`@thenajs/agentflow` is the engine (mechanism, no policy); `@thenajs/core` is
+`@harness-js/agentflow` is the engine (mechanism, no policy); `@harness-js/core` is
 the framework (decorators, DI, run context, middleware, observability).
 `flow`, `qdrant-client` and `cli` are satellites. Everything a run needs
 travels in an `AsyncLocalStorage`-backed `RunContext`.
@@ -61,9 +61,9 @@ Find your task in the left column.
 | Middleware chains, `app.use()`, plugins, `contextWindow` | [06-middleware-plugins](domains/06-middleware-plugins.md) |
 | `RunBudget`, token/cost accounting, `maxIterations`, `maxFails` | [07-budget-limits](domains/07-budget-limits.md) |
 | Report, `ExecutionEvent`, recorder tree, logger, redaction, the run ledger | [08-observability-report](domains/08-observability-report.md) |
-| `VectorMemory`, `VectorStore`, Qdrant, embeddings, `ThenaConfig.stores` | [09-vector-memory](domains/09-vector-memory.md) |
+| `VectorMemory`, `VectorStore`, Qdrant, embeddings, `HarnessConfig.stores` | [09-vector-memory](domains/09-vector-memory.md) |
 | The live execution viewer, its SSE server or its React UI | [10-flow-devtool](domains/10-flow-devtool.md) |
-| `thena create`, `thena g agent`, generated project templates | [11-cli-scaffolding](domains/11-cli-scaffolding.md) |
+| `harness create`, `harness g agent`, generated project templates | [11-cli-scaffolding](domains/11-cli-scaffolding.md) |
 
 If you cannot place the task, search for the symbol and read the file's header
 comment — this codebase documents *why* at the point of decision, and those
@@ -182,7 +182,7 @@ Match what is already there. Concretely:
 - **Error messages name the class, the parameter, and the fix.** Look at
   `di/params.ts` for the model.
 - **Never `throw` a string** (lint enforces it). Framework errors are prefixed
-  `[thena]`.
+  `[harness]`.
 - Prettier config is `printWidth: 88`. Run `npm run format` — do not hand-align.
 - Markdown is formatted by hand and is in `.prettierignore`. Leave it alone.
 

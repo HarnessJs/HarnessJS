@@ -10,10 +10,10 @@
     // então o typecheck precisa enxergar o mesmo — senão ele validaria contra
     // um `dist/` que pode estar velho.
     "paths": {
-      "@thenajs/core": ["./packages/core/src/index.ts"],
-      "@thenajs/agentflow": ["./packages/agentflow/src/index.ts"],
-      "@thenajs/tools": ["./packages/tools/src/index.ts"],
-      "@thenajs/qdrant-client": ["./packages/qdrant-client/src/index.ts"]
+      "@harness-js/core": ["./packages/core/src/index.ts"],
+      "@harness-js/agentflow": ["./packages/agentflow/src/index.ts"],
+      "@harness-js/tools": ["./packages/tools/src/index.ts"],
+      "@harness-js/qdrant-client": ["./packages/qdrant-client/src/index.ts"]
     },
     "baseUrl": "."
   },

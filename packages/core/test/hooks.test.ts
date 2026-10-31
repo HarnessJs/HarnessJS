@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { runWorkflow } from "@thenajs/core";
-import type { AgentContext, ToolCall, ToolResult } from "@thenajs/core";
+import { runWorkflow } from "@harness-js/core";
+import type { AgentContext, ToolCall, ToolResult } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -109,7 +109,7 @@ describe("afterTool", () => {
       { afterTool: () => "texto novo" },
     );
 
-    const { loop } = await import("@thenajs/core");
+    const { loop } = await import("@harness-js/core");
     await runWorkflow(
       makeWorkflow([
         loop({
@@ -272,7 +272,7 @@ describe("escape hatch run(input, ctx)", () => {
   });
 
   it("grava turn.calledTool: false, então untilAnswered encerra o loop", async () => {
-    const { loop, untilAnswered } = await import("@thenajs/core");
+    const { loop, untilAnswered } = await import("@harness-js/core");
     let voltas = 0;
 
     const Agente = makeAgent(

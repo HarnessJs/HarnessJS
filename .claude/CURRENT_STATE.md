@@ -27,11 +27,11 @@ Flow UI, which has its own `tsconfig` and is not covered by the root `tsc -b`.
 ## ⚠️ Uncommitted work — do not destroy
 
 `git status` shows ` M docs`. **`docs/` is a git submodule**
-(`git@github.com:thenajs/thenajs.github.io.git`), and that `M` is the pointer
+(`git@github.com:HarnessJs/harnessjs.github.io.git`), and that `M` is the pointer
 moved forward:
 
 ```
-recorded in HEAD:  4333c98  docs: ThenaConfig.memory passa a ser ThenaConfig.stores
+recorded in HEAD:  4333c98  docs: HarnessConfig.memory passa a ser HarnessConfig.stores
 checked out now:   646bb3b  docs: conserta o que só aparecia lendo a página renderizada
                    44a8e80  docs: exemplos mínimos primeiro, endurecimento depois
 ```
@@ -73,7 +73,7 @@ TRUTH.md.
 | `SECURITY.md:51` | says the shell tool was removed | **correct** — this one is current |
 
 `docs/` (the submodule) **is** up to date, including the
-`ThenaConfig.memory → stores` rename.
+`HarnessConfig.memory → stores` rename.
 
 ---
 
@@ -162,8 +162,8 @@ it has its own build and would drag the number down without saying anything.
 
 | Area | LOC | State |
 |---|---|---|
-| `packages/flow/src/ui/**` | ~350 | **Typechecked since 2026-08-21, still no lint and no tests.** `npm run typecheck:ui --workspace @thenajs/flow` is now the 7th CI step — before it, `ui/tsconfig.json` existed and nothing ran it, which is how three runtime bugs shipped (see above). `graph.ts` — the pure part — is now covered by `test/graph.test.ts`. Still excluded in `eslint.config.js`, and no test renders a React component. |
-| `packages/cli` | 333 | 10 tests on `templates.ts` since 2026-08-22, including the one that pins `THENA_VERSION` to the CLI's own version — the drift that would make `thena create` generate a project asking for a version that is not on npm. `index.ts` (the command wiring) is still untested. |
+| `packages/flow/src/ui/**` | ~350 | **Typechecked since 2026-08-21, still no lint and no tests.** `npm run typecheck:ui --workspace @harness-js/flow` is now the 7th CI step — before it, `ui/tsconfig.json` existed and nothing ran it, which is how three runtime bugs shipped (see above). `graph.ts` — the pure part — is now covered by `test/graph.test.ts`. Still excluded in `eslint.config.js`, and no test renders a React component. |
+| `packages/cli` | 333 | 10 tests on `templates.ts` since 2026-08-22, including the one that pins `HARNESS_VERSION` to the CLI's own version — the drift that would make `harness create` generate a project asking for a version that is not on npm. `index.ts` (the command wiring) is still untested. |
 | `packages/qdrant-client` | 192 | 14 tests since 2026-08-22, with `fetch` stubbed. They pin what goes out (route, body, auth header) and what is done with what comes back — including the guard that `remove({})` calls nothing, because deleting everything must not be implicit. |
 | `examples/` | — | Outside the workspace; CI never compiles it. |
 
@@ -197,7 +197,7 @@ The 40 lint warnings are deliberate, with reasons in `eslint.config.js`:
 - **`no-unsafe-function-type` (~19)** — `Function` is used where the framework
   accepts "the class" without constraining the signature
   (`runWorkflow(WorkflowClass: Function)`, the decorator `WeakMap`s). The
-  critique is valid: `Thena.create(() => {})` compiles today. The fix means
+  critique is valid: `Harness.create(() => {})` compiles today. The fix means
   introducing a `ClassLike` and changing 19 signatures, several public — a task
   with its own risk, not a hygiene pass.
 
@@ -207,10 +207,10 @@ Other known, accepted debt:
   file. Measured and covered by tests (`ledger-do-report.test.ts`) — projection
   is ~12.6 MB at 100k runs. Accepted for now.
 - Version drift. `packages/cli/test/templates.test.ts` now fails if
-  `THENA_VERSION` and the CLI's own version diverge, which closes the worst of
+  `HARNESS_VERSION` and the CLI's own version diverge, which closes the worst of
   it — the rest is still manual. The version lives in **twelve** places that must
   move together with nothing linking them: the **six** package `version` fields,
-  the **four internal dependency ranges**, the `THENA_VERSION` literal in
+  the **four internal dependency ranges**, the `HARNESS_VERSION` literal in
   `packages/cli/src/templates.ts`, and `package-lock.json`.
 
   The four ranges, which is the half that gets missed:
@@ -260,7 +260,7 @@ Not commitments — what the code and history imply is pending.
   gets pointed at `0.12.0` or abandoned, and updating the `docs/` submodule,
   which still teaches `warnIndexFailure`.
 - Make the version drift mechanical: have the CLI read its own `package.json` at
-  runtime instead of the `THENA_VERSION` literal, and add a CI check that every
+  runtime instead of the `HARNESS_VERSION` literal, and add a CI check that every
   internal range equals `^<sibling version>`.
 - Refresh `README.md`, `ROADMAP.md`, `CONTRIBUTING.md` against reality, or
   shrink the README and defer to `docs/` per ADR-020.

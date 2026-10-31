@@ -2,10 +2,10 @@ import { mkdtempSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 // `currentRun` não é API pública: o teste sonda o recorder, que é interno.
 import { currentRun } from "../src/run-context.js";
-import type { ExecutionEvent } from "@thenajs/core";
+import type { ExecutionEvent } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -45,7 +45,7 @@ describe("sem ninguém observando", () => {
   it("o recorder fica INATIVO — nenhuma árvore é construída", async () => {
     const espiado: { ativo?: boolean } = {};
     const { Fluxo } = fluxoQueEspia(espiado);
-    const app = Thena.create(Fluxo, {}); // sem report, log ou plugin
+    const app = Harness.create(Fluxo, {}); // sem report, log ou plugin
 
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -55,7 +55,7 @@ describe("sem ninguém observando", () => {
 
   it("o provider NÃO recebe sink de token, e por isso não transmite", async () => {
     const { provider, Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -66,7 +66,7 @@ describe("sem ninguém observando", () => {
   it("o resultado da execução é exatamente o mesmo", async () => {
     // O que muda é só a observação. A saída, não.
     const { Fluxo } = fluxo("a resposta");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("a resposta");
     await app.dispose();
@@ -77,7 +77,7 @@ describe("sem ninguém observando", () => {
     vi.spyOn(console, "warn").mockImplementation((m) => void avisos.push(String(m)));
 
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const exec = app.run({ prompt: "vai" });
 
     const vistos: ExecutionEvent[] = [];
@@ -95,7 +95,7 @@ describe("sem ninguém observando", () => {
     vi.spyOn(console, "warn").mockImplementation((m) => void avisos.push(String(m)));
 
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const exec = app.run({ prompt: "vai" });
 
     exec.onEvent(() => {});
@@ -112,7 +112,7 @@ describe("quem liga a observação", () => {
   it("observe: true liga, mesmo sem report, log nem plugin", async () => {
     const espiado: { ativo?: boolean } = {};
     const { provider, Fluxo } = fluxoQueEspia(espiado);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const vistos: ExecutionEvent[] = [];
@@ -127,11 +127,11 @@ describe("quem liga a observação", () => {
 
   it("report liga sozinho", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-obs-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-obs-"));
 
     const espiado: { ativo?: boolean } = {};
     const { Fluxo } = fluxoQueEspia(espiado);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
 
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -144,7 +144,7 @@ describe("quem liga a observação", () => {
     const espiado: { ativo?: boolean } = {};
     const { Fluxo } = fluxoQueEspia(espiado);
     const events: ExecutionEvent[] = [];
-    const app = Thena.create(Fluxo, { log: (e) => events.push(e) });
+    const app = Harness.create(Fluxo, { log: (e) => events.push(e) });
 
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -156,7 +156,7 @@ describe("quem liga a observação", () => {
   it("um plugin com onEvent liga sozinho", async () => {
     const espiado: { ativo?: boolean } = {};
     const { Fluxo } = fluxoQueEspia(espiado);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "olheiro", onEvent: () => {} });
 
     await app.run({ prompt: "vai" });
@@ -168,7 +168,7 @@ describe("quem liga a observação", () => {
   it("um plugin SÓ com middleware não liga — ele não lê eventos", async () => {
     const espiado: { ativo?: boolean } = {};
     const { Fluxo } = fluxoQueEspia(espiado);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "cache", chat: (_inv, next) => next() });
 
     await app.run({ prompt: "vai" });
@@ -181,7 +181,7 @@ describe("quem liga a observação", () => {
 
   it("a decisão é por execução — uma observada, a seguinte não", async () => {
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const comObs = app.run({ prompt: "1", observe: true });
     const vistos: ExecutionEvent[] = [];
@@ -202,10 +202,10 @@ describe("quem liga a observação", () => {
   it("observe: false não desliga o report — só o canal do handle", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "warn").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-obs-off-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-obs-off-"));
 
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
 
     const exec = app.run({ prompt: "vai", observe: false });
     const vistos: ExecutionEvent[] = [];
@@ -225,8 +225,8 @@ describe("runs concorrentes com observação diferente", () => {
 
     const lento = new FakeProvider([{ content: "lento" }], { delayMs: 25 });
     const rapido = new FakeProvider([{ content: "rápido" }], { delayMs: 5 });
-    const appA = Thena.create(makeWorkflow([makeAgent({ provider: lento })]), {});
-    const appB = Thena.create(makeWorkflow([makeAgent({ provider: rapido })]), {});
+    const appA = Harness.create(makeWorkflow([makeAgent({ provider: lento })]), {});
+    const appB = Harness.create(makeWorkflow([makeAgent({ provider: rapido })]), {});
 
     const a = appA.run({ prompt: "a", observe: true });
     const b = appB.run({ prompt: "b" });

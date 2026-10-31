@@ -1,4 +1,4 @@
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 import { SmokeWorkflow } from "./workflows/smoke.workflow.js";
 
 /**
@@ -16,7 +16,7 @@ import { SmokeWorkflow } from "./workflows/smoke.workflow.js";
 /** O agente inspeciona o próprio repositório — é o que torna o teste real. */
 
 async function main() {
-  const app = Thena.create(SmokeWorkflow, { log: true });
+  const app = Harness.create(SmokeWorkflow, { log: true });
 
   // Um plugin conta o que realmente aconteceu. Asserção sobre **efeito**: a
   // resposta de um modelo não é determinística, mas "chamou a tool" é.

@@ -47,7 +47,7 @@ export abstract class VectorStore extends HttpTransport {
   ensureCollectionOnce(options: CollectionOptions): Promise<void> {
     if (this.preparedWith !== undefined && this.preparedWith !== options.size) {
       throw new Error(
-        `[thena] This store was already prepared with ${this.preparedWith} ` +
+        `[harness] This store was already prepared with ${this.preparedWith} ` +
           `dimensions, but now received embeddings of ${options.size}. A ` +
           `collection accepts a single vector size — different embedding models ` +
           `need different stores (each with its own collection).`,
@@ -72,5 +72,5 @@ export abstract class VectorStore extends HttpTransport {
   abstract remove(selector: VectorSelector): Promise<void>;
 }
 
-/** Classe de store, instanciada pelo framework ao registrar no `ThenaConfig`. */
+/** Classe de store, instanciada pelo framework ao registrar no `HarnessConfig`. */
 export type VectorStoreCtor = new () => VectorStore;

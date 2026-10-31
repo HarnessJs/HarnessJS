@@ -19,19 +19,19 @@ function version(): string {
 }
 
 function usage(): void {
-  console.log(`ThenaJS CLI
+  console.log(`HarnessJS CLI
 
 Uso:
-  thena create <nome>        Cria um projeto novo em ./<nome>
-  thena g agent <nome>       Gera um agente em src/agents/<nome>/ (dentro do projeto)
+  harness create <nome>        Cria um projeto novo em ./<nome>
+  harness g agent <nome>       Gera um agente em src/agents/<nome>/ (dentro do projeto)
 
 Opções:
   -v, --version              Mostra a versão
   -h, --help                 Mostra esta ajuda
 
 Exemplos:
-  thena create my-agent
-  thena g agent explorer
+  harness create my-agent
+  harness g agent explorer
 `);
 }
 
@@ -49,7 +49,7 @@ function create(name: string): void {
     console.error(`Erro: o diretório "${name}" já existe.`);
     process.exit(1);
   }
-  console.log(`Criando o projeto ThenaJS "${name}"…\n`);
+  console.log(`Criando o projeto HarnessJS "${name}"…\n`);
   for (const file of projectFiles(name)) {
     write(dir, file.path, file.content);
   }
@@ -92,7 +92,7 @@ function main(): void {
   if (command === "create" || command === "new") {
     const name = rest[0];
     if (!name) {
-      console.error("Erro: informe o nome do projeto. Ex.: thena create my-agent");
+      console.error("Erro: informe o nome do projeto. Ex.: harness create my-agent");
       process.exit(1);
     }
     create(name);

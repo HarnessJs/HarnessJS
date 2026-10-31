@@ -1,4 +1,4 @@
-import type { ExecutionEvent } from "@thenajs/core";
+import type { ExecutionEvent } from "@harness-js/core";
 
 /**
  * Um evento da execução, já carimbado pelo servidor. O `runId` vem do próprio
@@ -41,7 +41,7 @@ export interface FlowSnapshot {
   events: FlowEvent[];
 }
 
-/** Opções do `thenaFlow(...)`. */
+/** Opções do `harnessFlow(...)`. */
 export interface FlowOptions {
   /** Porta do site. Default: `4100`. */
   port?: number;

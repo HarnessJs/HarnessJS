@@ -1,5 +1,5 @@
-import { StateManager } from "@thenajs/agentflow";
-import type { Message, PipelineContext, Step } from "@thenajs/agentflow";
+import { StateManager } from "@harness-js/agentflow";
+import type { Message, PipelineContext, Step } from "@harness-js/agentflow";
 import { currentRun, withRun } from "../run-context.js";
 import type { RunContext } from "../run-context.js";
 

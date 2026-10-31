@@ -1,4 +1,4 @@
-import { Agent, DefaultAgentContract } from "@thenajs/core";
+import { Agent, DefaultAgentContract } from "@harness-js/core";
 import { NvidiaProvider } from "../../providers/nvidia.provider.js";
 import { ReadFileTool } from "../../tools/read-file.tool.js";
 import { ShellTool } from "../../tools/shell.tool.js";

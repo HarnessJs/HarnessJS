@@ -1,4 +1,4 @@
-import type { State } from "@thenajs/agentflow";
+import type { State } from "@harness-js/agentflow";
 import type { ExecutionEvent } from "./observability/recorder.js";
 
 /**
@@ -216,7 +216,7 @@ export function createRunHandle<T>(parts: {
     const s = parts.finalState();
     if (!s) {
       throw new Error(
-        "[thena] This run published no final state. It is a framework bug — " +
+        "[harness] This run published no final state. It is a framework bug — " +
           "`runWorkflow` sets it before resolving.",
       );
     }
@@ -235,7 +235,7 @@ export function createRunHandle<T>(parts: {
     if (observing || warned) return;
     warned = true;
     console.warn(
-      `[thena] ${method} will receive nothing: this run is not being observed. ` +
+      `[harness] ${method} will receive nothing: this run is not being observed. ` +
         `Use \`run({ observe: true })\`, or turn on \`report\`, \`log\` or a ` +
         `plugin with \`onEvent\`.`,
     );

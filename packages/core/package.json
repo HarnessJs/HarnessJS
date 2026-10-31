@@ -1,15 +1,15 @@
 {
-  "name": "@thenajs/core",
+  "name": "@harness-js/core",
   "version": "0.13.1",
-  "description": "Camada de DX do ThenaJS: decorators (@Agent/@Workflow/@Tool) e runtime sobre o @thenajs/agentflow.",
+  "description": "Camada de DX do HarnessJS: decorators (@Agent/@Workflow/@Tool) e runtime sobre o @harness-js/agentflow.",
   "license": "MIT",
   "author": "castroneto",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenajs/ThenaJS.git",
+    "url": "git+https://github.com/HarnessJs/HarnessJS.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/thenajs/ThenaJS#readme",
+  "homepage": "https://github.com/HarnessJs/HarnessJS#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@thenajs/agentflow": "^0.13.0"
+    "@harness-js/agentflow": "^0.13.0"
   },
   "peerDependencies": {
     "zod": "^4.0.0"

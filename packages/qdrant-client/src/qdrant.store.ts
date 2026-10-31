@@ -1,4 +1,4 @@
-import { VectorStore } from "@thenajs/agentflow";
+import { VectorStore } from "@harness-js/agentflow";
 import type {
   CollectionOptions,
   VectorDistance,
@@ -7,7 +7,7 @@ import type {
   VectorSearch,
   VectorSelector,
   VectorStoreCredentials,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 
 export type QdrantCredentials = VectorStoreCredentials;
 
@@ -21,7 +21,7 @@ const DISTANCES: Record<VectorDistance, string> = {
 
 /**
  * Cliente Qdrant nativo, sobre a API REST — sem SDK, só `fetch`, herdando
- * retry e timeout do transporte do ThenaJS.
+ * retry e timeout do transporte do HarnessJS.
  *
  * Grava tudo numa **collection só** e separa contextos por um campo do payload
  * (`dataset`), que é a recomendação do próprio Qdrant: muitas collections
@@ -44,7 +44,7 @@ export class QdrantStore extends VectorStore {
     this.configureTransport(credentials);
     this.url = credentials.url.replace(/\/$/, "");
     this.apiKey = credentials.apiKey;
-    this.collection = credentials.collection ?? "thena_memory";
+    this.collection = credentials.collection ?? "harness_memory";
     this.datasetField = credentials.datasetField ?? "dataset";
   }
 

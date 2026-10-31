@@ -15,13 +15,13 @@ await) and to the inside (`ctx`).
 | `packages/core/src/run-context.ts` | `RunContext`, the `AsyncLocalStorage`, `newRunContext`, `childRunContext`, `withRun`, `currentRun`, `throwIfAborted`, `requestStop`, `runCleanups` |
 | `packages/core/src/run-view.ts` | The run-only view used when there is no step yet |
 | `packages/core/src/run-handle.ts` | `RunHandle`, `Channel`, `createRunHandle` |
-| `packages/core/src/bootstrap.ts` | `Thena.create`, per-run wiring, `use()`, `dispose()` |
+| `packages/core/src/bootstrap.ts` | `Harness.create`, per-run wiring, `use()`, `dispose()` |
 | `packages/core/src/settings.ts` | `RuntimeSettings` (just the vector stores) |
-| `packages/core/src/config.ts` | `ThenaConfig`, `ReportOptions`, `LogConfig` |
+| `packages/core/src/config.ts` | `HarnessConfig`, `ReportOptions`, `LogConfig` |
 
 ## Public API
 
-`Thena.create(WorkflowClass, config)` → `WorkflowApp` with `run`, `use`,
+`Harness.create(WorkflowClass, config)` → `WorkflowApp` with `run`, `use`,
 `dispose`. `RunHandle` with `runId`, `result`, `signal`, `abort`, `onEvent`,
 `eventStream`, `onToken`, `textStream`, plus `then`/`catch`/`finally`.
 `WorkflowRunOptions`: `input`, `memory`, `budget`, `report`, `log`, `observe`,
@@ -50,7 +50,7 @@ other domain's behaviour, only their constructors.
 - `abort` and `stopRequest` are the **same objects** in parent and child, so
   stopping from inside a sub-workflow ends the whole execution.
 - `currentRun()` **throws** outside a run. That is deliberate: returning
-  defaults made `ThenaConfig` silently vanish.
+  defaults made `HarnessConfig` silently vanish.
 - Cleanups run in reverse registration order, like `defer`, and a throwing
   cleanup is reported and swallowed — the run already finished.
 - The `AbortController` is created in `newRunContext`, not by the caller, so
@@ -79,7 +79,7 @@ other domain's behaviour, only their constructors.
 ## Tests
 
 `isolation.test.ts` · `run-context.test.ts` · `run-handle.test.ts` ·
-`app-run.test.ts` · `observation.test.ts` · `thena-create.test.ts` ·
+`app-run.test.ts` · `observation.test.ts` · `harness-create.test.ts` ·
 `context-duas-portas.test.ts` · `streaming.test.ts` · `per-run-config.test.ts`
 
 ## Safe to change

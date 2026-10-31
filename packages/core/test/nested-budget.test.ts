@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Tool, Workflow, Thena, context, runWorkflow } from "@thenajs/core";
-import type { BudgetUsage, ExecutionNode, WorkflowRuntime } from "@thenajs/core";
+import { Tool, Workflow, Harness, context, runWorkflow } from "@harness-js/core";
+import type { BudgetUsage, ExecutionNode, WorkflowRuntime } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -55,7 +55,7 @@ describe("orçamento em run aninhada", () => {
       makeAgent({ provider: dentro }),
     ]);
 
-    const app = Thena.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
+    const app = Harness.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
     await app.run({ prompt: "vai", budget: { maxChatCalls: 1 } });
     await app.dispose();
 
@@ -78,7 +78,7 @@ describe("orçamento em run aninhada", () => {
     ]);
     const leitor = new FakeProvider([{ content: "fim" }]);
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([
         makeAgent({ provider: disparador, tools: [toolQueRoda(Sub)] }),
         makeAgent(
@@ -104,7 +104,7 @@ describe("orçamento em run aninhada", () => {
       makeAgent({ provider: dentro }),
     ]);
 
-    const app = Thena.create(
+    const app = Harness.create(
       fluxoQueChamaSub(toolQueRoda(Sub, { maxChatCalls: 1 })),
       {},
     );
@@ -125,7 +125,7 @@ describe("orçamento em run aninhada", () => {
     ]);
 
     // O filho pede 999; não é dele a última palavra.
-    const app = Thena.create(
+    const app = Harness.create(
       fluxoQueChamaSub(toolQueRoda(Sub, { maxChatCalls: 999 })),
       {},
     );
@@ -143,7 +143,7 @@ describe("orçamento em run aninhada", () => {
       makeAgent({ provider: dentro }),
     ]);
 
-    const app = Thena.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
+    const app = Harness.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
     // O `mode` que decide é o de quem estourou — aqui, o do pai.
     await expect(
       app.run({
@@ -163,7 +163,7 @@ describe("orçamento em run aninhada", () => {
       makeAgent({ provider: dentro }),
     ]);
 
-    const app = Thena.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
+    const app = Harness.create(fluxoQueChamaSub(toolQueRoda(Sub)), {});
     await app.run({
       prompt: "vai",
       budget: { maxChatCalls: 1, onExceeded: (i) => estouros.push(i.reason) },
@@ -175,7 +175,7 @@ describe("orçamento em run aninhada", () => {
 
   it("no report, o nó do sub-workflow mostra o gasto DELE, não o da run", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-nb-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-nb-"));
 
     const dentro = new FakeProvider([
       { content: "f", usage: { promptTokens: 7, completionTokens: 0 } },
@@ -188,7 +188,7 @@ describe("orçamento em run aninhada", () => {
       },
     ]);
 
-    const app = Thena.create(fluxoQueChamaSub(toolQueRoda(Sub), parent), {
+    const app = Harness.create(fluxoQueChamaSub(toolQueRoda(Sub), parent), {
       report: { dir },
     });
     await app.run({ prompt: "vai", budget: { maxTokens: 9999 } });
@@ -236,7 +236,7 @@ describe("orçamento em run aninhada", () => {
       steps: [makeAgent({ provider, tools: [RecursivoTool as never] })],
     })(Recursivo);
 
-    const app = Thena.create(Recursivo, {});
+    const app = Harness.create(Recursivo, {});
     await app.run({ prompt: "vai", budget: { maxChatCalls: 3 } });
     await app.dispose();
 
@@ -265,8 +265,8 @@ describe("orçamento em run aninhada", () => {
         makeAgent({ provider: p }),
       ]);
 
-    const appA = Thena.create(tres(a), {});
-    const appB = Thena.create(tres(b), {});
+    const appA = Harness.create(tres(a), {});
+    const appB = Harness.create(tres(b), {});
 
     const [saidaA, saidaB] = await Promise.all([
       appA.run({ prompt: "a", budget: { maxChatCalls: 1 } }),

@@ -1,17 +1,17 @@
 {
-  "name": "@thenajs/qdrant-client",
+  "name": "@harness-js/qdrant-client",
   "version": "0.13.1",
-  "description": "Cliente Qdrant nativo para ThenaJS — implementação de VectorStore sobre a API REST, sem SDK.",
+  "description": "Cliente Qdrant nativo para HarnessJS — implementação de VectorStore sobre a API REST, sem SDK.",
   "license": "MIT",
   "author": "castroneto",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenajs/ThenaJS.git",
+    "url": "git+https://github.com/HarnessJs/HarnessJS.git",
     "directory": "packages/qdrant-client"
   },
-  "homepage": "https://github.com/thenajs/ThenaJS#readme",
+  "homepage": "https://github.com/HarnessJs/HarnessJS#readme",
   "keywords": [
-    "thenajs",
+    "harness-js",
     "qdrant",
     "vector-database",
     "rag",
@@ -34,6 +34,6 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@thenajs/agentflow": "^0.13.0"
+    "@harness-js/agentflow": "^0.13.0"
   }
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Tool, Thena, loop, runWorkflow, untilAnswered } from "@thenajs/core";
-import type { Context, ExecutionEvent, WorkflowRuntime } from "@thenajs/core";
+import { Tool, Harness, loop, runWorkflow, untilAnswered } from "@harness-js/core";
+import type { Context, ExecutionEvent, WorkflowRuntime } from "@harness-js/core";
 import { FakeProvider, captureError, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -22,7 +22,7 @@ async function appComTool(Classe: unknown, turnos = [{ tool: { name: "alvo" } }]
   const provider = new FakeProvider(
     turnos.map((t) => ({ tool: { name: t.tool.name, arguments: { x: "1" } } })),
   );
-  const app = Thena.create(
+  const app = Harness.create(
     makeWorkflow([makeAgent({ provider, tools: [Classe as never] })]),
     {},
   );
@@ -163,7 +163,7 @@ describe("ctx.stop()", () => {
     const provider = new FakeProvider([
       { tool: { name: "alvo", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([
         makeAgent({ provider, tools: [comContexto(T) as never] }),
         makeAgent({ provider: depois }),
@@ -189,7 +189,7 @@ describe("ctx.stop()", () => {
     const provider = new FakeProvider([
       { tool: { name: "alvo", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([
         loop({
           steps: [makeAgent({ provider, tools: [comContexto(T) as never] })],
@@ -236,7 +236,7 @@ describe("ctx.onDispose()", () => {
     const provider = new FakeProvider([
       { tool: { name: "alvo", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider, tools: [comContexto(T) as never] })]),
       {},
     );
@@ -326,7 +326,7 @@ describe("ctx.meta()", () => {
 // Estas fábricas fazem isso sem a sintaxe `@`, que é avaliada no import.
 // ---------------------------------------------------------------------------
 
-import { context, input } from "@thenajs/core";
+import { context, input } from "@harness-js/core";
 
 /**
  * Equivale a `execute(@input() args, @context() ctx)`.

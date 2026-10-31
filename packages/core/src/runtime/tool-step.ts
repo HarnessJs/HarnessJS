@@ -1,5 +1,5 @@
-import { toToolOutput } from "@thenajs/agentflow";
-import type { ToolType } from "@thenajs/agentflow";
+import { toToolOutput } from "@harness-js/agentflow";
+import type { ToolType } from "@harness-js/agentflow";
 import { PLAN } from "../di/tool.js";
 import type { InjectionPlan } from "../di/tool.js";
 import { resolvePoint } from "../di/params.js";

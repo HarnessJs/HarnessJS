@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { Thena, bootstrapWorkflow } from "@thenajs/core";
+import { Harness, bootstrapWorkflow } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
- * `Thena.create` é o ponto de entrada; `bootstrapWorkflow` é o nome antigo.
+ * `Harness.create` é o ponto de entrada; `bootstrapWorkflow` é o nome antigo.
  *
  * A troca resolve duas coisas de uma vez. O nome colidia com o `bootstrap()`
  * que o próprio template do usuário declara — dois "bootstrap" em duas linhas.
@@ -16,12 +16,12 @@ function fluxo(response = "ok") {
   return { provider, Fluxo: makeWorkflow([makeAgent({ provider })]) };
 }
 
-describe("Thena.create", () => {
+describe("Harness.create", () => {
   it("devolve o app SEM precisar de await", async () => {
     const { Fluxo } = fluxo("pronto");
 
     // Sem `await` na criação: o valor já é o app, não uma Promise.
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     expect(typeof app.run).toBe("function");
     expect(app).not.toBeInstanceOf(Promise);
 
@@ -33,7 +33,7 @@ describe("Thena.create", () => {
     const { Fluxo } = fluxo("pronto");
 
     // `await` sobre valor não-Promise resolve para o próprio valor.
-    const app = await Thena.create(Fluxo, {});
+    const app = await Harness.create(Fluxo, {});
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("pronto");
     await app.dispose();
@@ -43,7 +43,7 @@ describe("Thena.create", () => {
     type MinhaData = { conta: string };
     const { Fluxo } = fluxo("ok");
 
-    const app = Thena.create<string, MinhaData>(Fluxo, {});
+    const app = Harness.create<string, MinhaData>(Fluxo, {});
     await app.run({ prompt: "x", data: { conta: "acme" } });
     await app.dispose();
   });
@@ -54,7 +54,7 @@ describe("bootstrapWorkflow (@deprecated)", () => {
     const { Fluxo } = fluxo("do alias");
 
     const promessa = bootstrapWorkflow(Fluxo, {});
-    // Diferente do `Thena.create`: o alias antigo devolve Promise, porque era
+    // Diferente do `Harness.create`: o alias antigo devolve Promise, porque era
     // assim que estava publicado e `.then()` de alguém não pode parar de valer.
     expect(promessa).toBeInstanceOf(Promise);
 
@@ -63,12 +63,12 @@ describe("bootstrapWorkflow (@deprecated)", () => {
     await app.dispose();
   });
 
-  it("produz um app equivalente ao do `Thena.create`", async () => {
+  it("produz um app equivalente ao do `Harness.create`", async () => {
     const a = fluxo("igual");
     const b = fluxo("igual");
 
     const antigo = await bootstrapWorkflow(a.Fluxo, {});
-    const novo = Thena.create(b.Fluxo, {});
+    const novo = Harness.create(b.Fluxo, {});
 
     const [x, y] = await Promise.all([
       antigo.run({ prompt: "vai" }),

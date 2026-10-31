@@ -1,4 +1,4 @@
-import type { ToolType, VectorMemory } from "@thenajs/agentflow";
+import type { ToolType, VectorMemory } from "@harness-js/agentflow";
 import type { InjectionPoint } from "../decorators/inject.js";
 import type { AgentContext } from "../types.js";
 
@@ -29,7 +29,7 @@ export function resolvePoint(
     case "context":
       if (!d.ctx) {
         throw new Error(
-          `[thena] @context() in ${where} (parameter ${index}): the context ` +
+          `[harness] @context() in ${where} (parameter ${index}): the context ` +
             `does not exist yet when the class is constructed. Use @context() ` +
             `in a tool's execute, or take ctx as a hook parameter.`,
         );
@@ -39,7 +39,7 @@ export function resolvePoint(
     case "state":
       if (!d.workflowState) {
         throw new Error(
-          `[thena] @state() in ${where} (parameter ${index}): no state ` +
+          `[harness] @state() in ${where} (parameter ${index}): no state ` +
             `declared. Add \`state: MyClass\` to the @Workflow.`,
         );
       }
@@ -48,7 +48,7 @@ export function resolvePoint(
     case "tools":
       if (!d.peers) {
         throw new Error(
-          `[thena] @tools() in ${where} (parameter ${index}): the tool list ` +
+          `[harness] @tools() in ${where} (parameter ${index}): the tool list ` +
             `does not exist yet when the class is constructed — the tools are ` +
             `wrapped per step invocation. Use @tools() in a tool's execute.`,
         );
@@ -60,8 +60,8 @@ export function resolvePoint(
       const found = d.memories.find((m) => m.store instanceof point.store!);
       if (!found) {
         throw new Error(
-          `[thena] @memory(${point.store.name}) in ${where}: that store is not ` +
-            `registered in ThenaConfig.stores.`,
+          `[harness] @memory(${point.store.name}) in ${where}: that store is not ` +
+            `registered in HarnessConfig.stores.`,
         );
       }
       return found;
