@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { Thena, contextWindow, loop } from "@thenajs/core";
-import type { Message } from "@thenajs/core";
+import { Harness, contextWindow, loop } from "@harness-js/core";
+import type { Message } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -28,7 +28,7 @@ async function rodar(
     }),
   ]);
 
-  const app = Thena.create(Fluxo, {});
+  const app = Harness.create(Fluxo, {});
   if (janela) await app.use({ name: "janela", chat: janela });
   await app.run({ prompt: "pergunta inicial" });
   await app.dispose();
@@ -96,7 +96,7 @@ describe("maxCharsPorTool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "janela", chat: contextWindow({ maxCharsPerTool: 100 }) });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -133,7 +133,7 @@ describe("pareamento assistant/tool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "janela", chat: janela });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -176,7 +176,7 @@ describe("pareamento assistant/tool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "janela", chat: contextWindow({ maxChars: 40 }) });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -217,7 +217,7 @@ describe("pareamento assistant/tool", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       log: (e) => e.kind === "chat" && e.data && events.push(e.data),
     });
     await app.use({ name: "janela", chat: contextWindow({ maxTurns: 3 }) });
@@ -284,7 +284,7 @@ describe("telemetria", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       log: (e) => e.kind === "chat" && e.data && events.push(e.data),
     });
     await app.use({ name: "janela", chat: contextWindow({ maxTurns: 2 }) });

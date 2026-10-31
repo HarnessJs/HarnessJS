@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -29,7 +29,7 @@ const LEDGER = "runs.jsonl";
 
 /** Uma pasta de report vazia. */
 function pasta(): string {
-  return mkdtempSync(join(tmpdir(), "thena-ledger-"));
+  return mkdtempSync(join(tmpdir(), "harness-ledger-"));
 }
 
 /** Escreve `n` linhas de ledger, como se `n` runs já tivessem acontecido. */
@@ -50,7 +50,7 @@ function seedFromDisk(dir: string, n: number): void {
 
 /** Roda uma vez com report ligado e espera o índice ser renderizado. */
 async function rodarComReport(dir: string, mensagem = "vai"): Promise<void> {
-  const app = Thena.create(
+  const app = Harness.create(
     makeWorkflow([makeAgent({ provider: new FakeProvider() })]),
     { report: { dir } },
   );

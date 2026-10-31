@@ -3,7 +3,7 @@ import { readdirSync } from "node:fs";
 import { join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import * as core from "@thenajs/core";
+import * as core from "@harness-js/core";
 
 /**
  * Invariantes de **arquitetura** — as que não têm como quebrar um teste de
@@ -33,15 +33,15 @@ describe("camadas", () => {
   /**
    * O engine é mecanismo; o core é política. A direção da seta é a arquitetura
    * inteira — e nada no toolchain a segura: o symlink do workspace resolve
-   * `@thenajs/core` de dentro do agentflow, e o `tsc` aceita sem reclamar.
+   * `@harness-js/core` de dentro do agentflow, e o `tsc` aceita sem reclamar.
    */
   it("o engine NÃO importa o core — a seta só aponta para um lado", () => {
-    // Casa **import**, não menção: `state.types.ts` cita o `@thenajs/core` num
+    // Casa **import**, não menção: `state.types.ts` cita o `@harness-js/core` num
     // comentário de propósito, para separar o `ProviderToolCall` do `ToolCall`
     // dos hooks. Um `includes()` reprovaria esse comentário — e a lição do
     // repositório é que comentário explicando o porquê é para ser escrito, não
     // evitado por causa de um teste desajeitado.
-    const IMPORTA_CORE = /(?:from|import|require)\s*\(?\s*["']@thenajs\/core["']/;
+    const IMPORTA_CORE = /(?:from|import|require)\s*\(?\s*["']@harness-js\/core["']/;
 
     const infratores = arquivosTs(join(raiz, "packages/agentflow/src")).filter((f) =>
       IMPORTA_CORE.test(readFileSync(f, "utf-8")),
@@ -52,7 +52,7 @@ describe("camadas", () => {
 
   /**
    * `VectorStore` mora no **engine**, não no core. Um satélite de banco vetorial
-   * que importe `@thenajs/core` arrasta decorators, DI, bootstrap e report para
+   * que importe `@harness-js/core` arrasta decorators, DI, bootstrap e report para
    * quem só queria o store.
    *
    * O teste acima não pega isto: ele olha a seta saindo de dentro do engine, e
@@ -61,7 +61,7 @@ describe("camadas", () => {
    * reexporta.
    */
   it("um satélite de store depende do engine, não do core", () => {
-    const IMPORTA_CORE = /(?:from|import|require)\s*\(?\s*["']@thenajs\/core["']/;
+    const IMPORTA_CORE = /(?:from|import|require)\s*\(?\s*["']@harness-js\/core["']/;
     const pacote = join(raiz, "packages/qdrant-client");
 
     const infratores = arquivosTs(join(pacote, "src")).filter((f) =>
@@ -72,7 +72,9 @@ describe("camadas", () => {
     // O manifesto tem que dizer a mesma coisa que os imports — senão o pacote
     // publicado continua puxando o core na instalação de quem o usa.
     const manifesto = JSON.parse(readFileSync(join(pacote, "package.json"), "utf-8"));
-    expect(Object.keys(manifesto.dependencies ?? {})).toEqual(["@thenajs/agentflow"]);
+    expect(Object.keys(manifesto.dependencies ?? {})).toEqual([
+      "@harness-js/agentflow",
+    ]);
   });
 
   /**
@@ -127,7 +129,7 @@ describe("nomes de arquivo que são contrato", () => {
   });
 });
 
-describe("superfície pública do @thenajs/core", () => {
+describe("superfície pública do @harness-js/core", () => {
   /**
    * `packages/core/src/index.ts` é a fronteira de compatibilidade: sumir com um
    * nome daqui é breaking change, e em `0.x` isso sobe o **minor** e entra no
@@ -145,13 +147,13 @@ describe("superfície pública do @thenajs/core", () => {
     "DEFAULT_MAX_ITERATIONS",
     "DefaultAgentContract",
     "FatalToolError",
+    "Harness",
     "HttpTransport",
     "OllamaProvider",
     "OpenAIProvider",
     "Pipeline",
     "Providers",
     "StateManager",
-    "Thena",
     "Tool",
     "VectorMemory",
     "VectorStore",

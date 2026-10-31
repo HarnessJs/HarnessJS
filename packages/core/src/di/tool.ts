@@ -1,11 +1,11 @@
-import type { ToolType } from "@thenajs/agentflow";
+import type { ToolType } from "@harness-js/agentflow";
 import { getToolMetadata } from "../decorators/metadata.js";
 import { pointsOf } from "../decorators/inject.js";
 import type { InjectionPoint } from "../decorators/inject.js";
 import type { ToolClass, ToolInput } from "../types.js";
 
 /** Onde o plano de injeção do `execute` viaja até o ponto que tem o ctx. */
-export const PLAN = Symbol("thena:plano-de-injecao");
+export const PLAN = Symbol("harness:plano-de-injecao");
 
 export interface InjectionPlan {
   instance: any;
@@ -26,7 +26,7 @@ export function resolveTool(input: ToolInput, createRuntime: () => unknown): Too
   }
   const config = getToolMetadata(input);
   if (!config) {
-    throw new Error(`[thena] Class "${input.name}" is not decorated with @Tool().`);
+    throw new Error(`[harness] Class "${input.name}" is not decorated with @Tool().`);
   }
   // Como `WorkflowRuntime` é a única dependência injetável, ele é passado a
   // toda tool; tools sem construtor apenas ignoram o argumento extra. Assim a
@@ -42,7 +42,9 @@ export function resolveTool(input: ToolInput, createRuntime: () => unknown): Too
   // falha apareceria como `TypeError: instance.execute is not a function`
   // lá na frente — genérico, e mascarado como observação de falha da tool.
   if (typeof instance.execute !== "function") {
-    throw new Error(`[thena] Class "${input.name}" does not implement execute(input).`);
+    throw new Error(
+      `[harness] Class "${input.name}" does not implement execute(input).`,
+    );
   }
   const points = pointsOf(input, "execute");
 

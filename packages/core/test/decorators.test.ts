@@ -9,7 +9,7 @@ import {
   getAgentMetadata,
   getWorkflowMetadata,
   runWorkflow,
-} from "@thenajs/core";
+} from "@harness-js/core";
 import { FakeProvider, PROMPT, makeAgent, makeWorkflow } from "./harness.js";
 
 /**

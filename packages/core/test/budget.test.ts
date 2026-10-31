@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { BudgetExceededError, loop, runWorkflow } from "@thenajs/core";
-import type { BudgetExceeded } from "@thenajs/core";
+import { BudgetExceededError, loop, runWorkflow } from "@harness-js/core";
+import type { BudgetExceeded } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /** Caracterização do `RunBudget`: teto da execução inteira. */

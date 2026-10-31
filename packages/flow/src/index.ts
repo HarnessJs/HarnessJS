@@ -1,5 +1,5 @@
-// API pública do @thenajs/flow — o visualizador ao vivo da execução.
+// API pública do @harness-js/flow — o visualizador ao vivo da execução.
 
-export { thenaFlow } from "./plugin.js";
+export { harnessFlow } from "./plugin.js";
 export { FlowServer } from "./server/server.js";
 export type { FlowOptions, FlowEvent, FlowRun, FlowSnapshot } from "./types.js";

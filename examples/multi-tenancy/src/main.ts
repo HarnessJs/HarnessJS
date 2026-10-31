@@ -1,4 +1,4 @@
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 import { AssistantWorkflow } from "./workflows/assistant.workflow";
 import { config } from "./config";
 import type { DadosDaConta } from "./execucao";
@@ -7,7 +7,7 @@ async function bootstrap() {
   // O genérico vale para as duas pontas: aqui o `data` do `run()` é
   // **checado**, e lá dentro o `context<DadosDaConta>()` devolve os campos já
   // tipados.
-  const app = Thena.create<string, DadosDaConta>(AssistantWorkflow, config);
+  const app = Harness.create<string, DadosDaConta>(AssistantWorkflow, config);
 
   // `data` é o canal da execução: o framework transporta e propaga, sem
   // interpretar — e sem enviar ao modelo.

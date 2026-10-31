@@ -9,14 +9,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Thena, loop } from "@thenajs/core";
-import type { ExecutionNode } from "@thenajs/core";
+import { Harness, loop } from "@harness-js/core";
+import type { ExecutionNode } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /** Caracterização do report: árvore de execução, arquivos e conteúdo. */
 
 function pastaTemp(): string {
-  return mkdtempSync(join(tmpdir(), "thena-report-"));
+  return mkdtempSync(join(tmpdir(), "harness-report-"));
 }
 
 /** A árvore achatada em caminhos "kind > kind > kind", para asserção legível. */
@@ -44,7 +44,7 @@ describe("report", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -64,7 +64,7 @@ describe("report", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "1" });
     await app.run({ prompt: "2" });
     await app.dispose();
@@ -85,7 +85,7 @@ describe("report", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "1" });
     await app.run({ prompt: "2" });
     await app.dispose();
@@ -114,7 +114,7 @@ describe("report", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
 
     // Primeira run: cria o ledger.
     await app.run({ prompt: "1" });
@@ -126,7 +126,7 @@ describe("report", () => {
     mkdirSync(join(dir, "lixo"), { recursive: true });
     writeFileSync(join(dir, "lixo", "report.json"), "{ não é json");
 
-    const app2 = Thena.create(Fluxo, { report: { dir } });
+    const app2 = Harness.create(Fluxo, { report: { dir } });
     await app2.run({ prompt: "2" });
     await app2.dispose();
 
@@ -156,7 +156,7 @@ describe("report", () => {
     );
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "nova" });
     await app.dispose();
 
@@ -170,7 +170,7 @@ describe("report", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     const Fluxo = makeWorkflow([makeAgent({ provider: new FakeProvider() })]);
-    const app = Thena.create(Fluxo, { report: { dir, format: "json" } });
+    const app = Harness.create(Fluxo, { report: { dir, format: "json" } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -190,7 +190,7 @@ describe("report", () => {
     const Fluxo = makeWorkflow([
       makeAgent({ provider: new FakeProvider([{ content: "ok" }], { delayMs: 5 }) }),
     ]);
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
 
     // O índice era um read-modify-write sem coordenação: as duas liam a pasta e
     // escreviam `index.html`, e a última a escrever apagava a outra.
@@ -228,7 +228,7 @@ describe("report", () => {
     ]);
     const Fluxo = makeWorkflow([makeAgent({ provider, tools: [Ferramenta] })]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -256,7 +256,7 @@ describe("report", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -276,7 +276,7 @@ describe("report", () => {
     ]);
     const Fluxo = makeWorkflow([makeAgent({ provider })]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -299,7 +299,7 @@ describe("report", () => {
     ]);
     const Fluxo = makeWorkflow([makeAgent({ provider, tools: [Ferramenta] })]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "vai" });
     await app.dispose();
 

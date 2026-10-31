@@ -1,6 +1,6 @@
-import type { ThenaConfig } from "@thenajs/core";
+import type { HarnessConfig } from "@harness-js/core";
 
-export const config: ThenaConfig = {
+export const config: HarnessConfig = {
   // Loga ao vivo o que está sendo executado (agentes, chats, tools).
   // Use "verbose" para incluir o conteúdo, ou uma função como sink customizado.
   log: true,

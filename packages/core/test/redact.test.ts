@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Thena, redactSecrets } from "@thenajs/core";
-import type { ExecutionNode } from "@thenajs/core";
+import { Harness, redactSecrets } from "@harness-js/core";
+import type { ExecutionNode } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -71,7 +71,7 @@ describe("redactSecrets", () => {
 describe("no report", () => {
   it("mascara a mensagem de erro de uma tool", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-redact-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-redact-"));
 
     const tool = makeTool({ name: "db", description: "consulta", schema }, () => {
       throw new Error(
@@ -83,7 +83,7 @@ describe("no report", () => {
     ]);
     const Fluxo = makeWorkflow([makeAgent({ provider, tools: [tool] })]);
 
-    const app = Thena.create(Fluxo, { report: { dir } });
+    const app = Harness.create(Fluxo, { report: { dir } });
     await app.run({ prompt: "consulte" });
     await app.dispose();
 
@@ -101,9 +101,9 @@ describe("no report", () => {
 
   it("mascara o prompt enviado ao modelo", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-redact-prompt-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-redact-prompt-"));
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: new FakeProvider() })]),
       { report: { dir } },
     );
@@ -117,9 +117,9 @@ describe("no report", () => {
 
   it("`redact: false` desliga — o segredo vai para o disco", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-redact-off-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-redact-off-"));
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: new FakeProvider() })]),
       { report: { dir }, redact: false },
     );
@@ -133,9 +133,9 @@ describe("no report", () => {
 
   it("uma função própria substitui o default, e pode compor com ele", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-redact-fn-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-redact-fn-"));
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: new FakeProvider() })]),
       {
         report: { dir },
@@ -155,9 +155,9 @@ describe("no report", () => {
 
   it("`content: false` mantém a árvore e descarta o texto", async () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
-    const dir = mkdtempSync(join(tmpdir(), "thena-sem-content-"));
+    const dir = mkdtempSync(join(tmpdir(), "harness-sem-content-"));
 
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: new FakeProvider([{ content: "oi" }]) })]),
       { report: { dir, content: false } },
     );

@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@thenajs/core": "file:../../packages/core",
+    "@harness-js/core": "file:../../packages/core",
     "zod": "^4.0.0"
   },
   "devDependencies": {

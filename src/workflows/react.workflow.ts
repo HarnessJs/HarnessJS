@@ -1,4 +1,4 @@
-import { Workflow, loop, untilAnswered } from "@thenajs/core";
+import { Workflow, loop, untilAnswered } from "@harness-js/core";
 import { ExplorerAgent } from "../agents/explorer/explorer.agent.js";
 
 /**

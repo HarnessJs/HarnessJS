@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Thena, loop, untilAnswered } from "@thenajs/core";
-import type { ExecutionEvent, RunHandle } from "@thenajs/core";
+import { Harness, loop, untilAnswered } from "@harness-js/core";
+import type { ExecutionEvent, RunHandle } from "@harness-js/core";
 import {
   FakeProvider,
   captureError,
@@ -30,7 +30,7 @@ afterEach(() => vi.restoreAllMocks());
 describe("o handle é thenable", () => {
   it("`await` devolve o resultado, como antes", async () => {
     const { Fluxo } = fluxo("resultado");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     await expect(app.run({ prompt: "vai" })).resolves.toBe("resultado");
     await app.dispose();
@@ -38,7 +38,7 @@ describe("o handle é thenable", () => {
 
   it("`.result` é uma Promise comum", async () => {
     const { Fluxo } = fluxo("resultado");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai" });
     expect(exec.result).toBeInstanceOf(Promise);
@@ -57,7 +57,7 @@ describe("o handle é thenable", () => {
         },
       ),
     ]);
-    const app = Thena.create(Quebrado, {});
+    const app = Harness.create(Quebrado, {});
 
     let passouNoFinally = false;
     const saida = await app
@@ -72,7 +72,7 @@ describe("o handle é thenable", () => {
 
   it("compõe com Promise.all", async () => {
     const { Fluxo } = fluxo("x");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     await expect(
       Promise.all([app.run({ prompt: "1" }), app.run({ prompt: "2" })]),
@@ -84,7 +84,7 @@ describe("o handle é thenable", () => {
 describe("runId síncrono", () => {
   it("está disponível antes do primeiro turno", async () => {
     const { Fluxo } = fluxo("x", 30);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     // Sem await: é o que permite responder `{ runId }` num POST.
     const exec = app.run({ prompt: "vai" });
@@ -96,7 +96,7 @@ describe("runId síncrono", () => {
 
   it("cada execução tem o seu", async () => {
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const a = app.run({ prompt: "1" });
     const b = app.run({ prompt: "2" });
@@ -108,7 +108,7 @@ describe("runId síncrono", () => {
 
   it("é o mesmo id que aparece nos eventos", async () => {
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const events: ExecutionEvent[] = [];
     const exec = app.run({ prompt: "vai", observe: true });
@@ -123,7 +123,7 @@ describe("runId síncrono", () => {
 describe("abort", () => {
   it("corta a chamada em voo, sem esperar ela terminar", async () => {
     const { provider, Fluxo } = fluxo("nunca", 500);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const inicio = Date.now();
     const exec = app.run({ prompt: "vai" });
@@ -163,7 +163,7 @@ describe("abort", () => {
       }),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const exec = (caixa.exec = app.run({ prompt: "vai" }));
 
     expect((await captureError(exec)).name).toBe("AbortError");
@@ -173,7 +173,7 @@ describe("abort", () => {
 
   it("a razão do abort chega inteira no catch", async () => {
     const { Fluxo } = fluxo("x", 30);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const minhaRazao = new Error("usuário desistiu");
 
     const exec = app.run({ prompt: "vai" });
@@ -185,7 +185,7 @@ describe("abort", () => {
 
   it("sem razão, é AbortError — distinguível de um erro comum", async () => {
     const { Fluxo } = fluxo("x", 30);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai" });
     exec.abort();
@@ -200,7 +200,7 @@ describe("abort", () => {
       { provider },
       { onError: () => "recuperei" }, // tentaria engolir o abort
     );
-    const app = Thena.create(makeWorkflow([Agente]), {});
+    const app = Harness.create(makeWorkflow([Agente]), {});
 
     const exec = app.run({ prompt: "vai" });
     exec.abort();
@@ -213,7 +213,7 @@ describe("abort", () => {
 describe("signal vindo de fora", () => {
   it("um signal já abortado impede a execução", async () => {
     const { provider, Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const controller = new AbortController();
     controller.abort();
@@ -228,7 +228,7 @@ describe("signal vindo de fora", () => {
 
   it("AbortSignal.timeout corta, com TimeoutError", async () => {
     const { Fluxo } = fluxo("x", 200);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const fail = await captureError(
       app.run({ prompt: "vai", signal: AbortSignal.timeout(20) }),
@@ -239,7 +239,7 @@ describe("signal vindo de fora", () => {
 
   it("o signal externo e o abort() do handle valem os dois", async () => {
     const { Fluxo } = fluxo("x", 200);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const controller = new AbortController();
 
     // O handle aborta primeiro; o externo nunca dispara.
@@ -254,7 +254,7 @@ describe("signal vindo de fora", () => {
     const providerFilho = new FakeProvider([{ content: "filho" }]);
     const SubFluxo = makeWorkflow([makeAgent({ provider: providerFilho })]);
 
-    const { Tool } = await import("@thenajs/core");
+    const { Tool } = await import("@harness-js/core");
     const SubTool = class {
       constructor(private readonly runtime: any) {}
       execute() {
@@ -267,7 +267,7 @@ describe("signal vindo de fora", () => {
       [{ tool: { name: "sub", arguments: { x: "1" } } }],
       { delayMs: 20 },
     );
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: providerPai, tools: [SubTool as never] })]),
       {},
     );
@@ -285,7 +285,7 @@ describe("signal vindo de fora", () => {
 describe("onEvent e eventStream", () => {
   it("quem assina DEPOIS do início recebe o que já passou", async () => {
     const { Fluxo } = fluxo("x", 40);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     // deixa a execução andar antes de assinar — o caso do SSE que conecta tarde
@@ -302,7 +302,7 @@ describe("onEvent e eventStream", () => {
 
   it("a assinatura pode ser cancelada", async () => {
     const { Fluxo } = fluxo("x", 30);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const vistos: ExecutionEvent[] = [];
     const exec = app.run({ prompt: "vai", observe: true });
@@ -317,7 +317,7 @@ describe("onEvent e eventStream", () => {
 
   it("eventStream termina quando a execução acaba", async () => {
     const { Fluxo } = fluxo();
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const vistos: ExecutionEvent[] = [];
@@ -330,7 +330,7 @@ describe("onEvent e eventStream", () => {
 
   it("um assinante que lança não derruba a execução", async () => {
     const { Fluxo } = fluxo("intacto");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     exec.onEvent(() => {
@@ -345,7 +345,7 @@ describe("onEvent e eventStream", () => {
 describe("dispose drena as execuções em voo", () => {
   it("aborta o que está rodando e espera soltar", async () => {
     const { Fluxo } = fluxo("x", 500);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai" });
     const capturado = captureError(exec);

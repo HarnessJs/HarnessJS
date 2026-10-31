@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { runWorkflow } from "@thenajs/core";
+import { runWorkflow } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 describe("harness", () => {

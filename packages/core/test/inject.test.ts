@@ -5,15 +5,15 @@ import {
   DefaultAgentContract,
   Tool,
   Workflow,
-  Thena,
+  Harness,
   context,
   input,
   loop,
   memory,
   runWorkflow,
   state,
-} from "@thenajs/core";
-import type { AgentContext, VectorMemory } from "@thenajs/core";
+} from "@harness-js/core";
+import type { AgentContext, VectorMemory } from "@harness-js/core";
 import {
   FakeProvider,
   FakeVectorStore,
@@ -259,7 +259,7 @@ describe("mensagens de erro da injeção", () => {
     @Workflow({ steps: [PedeMemoria] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, { stores: [FakeVectorStore] });
+    const app = Harness.create(Fluxo, { stores: [FakeVectorStore] });
 
     await expect(app.run({ prompt: "vai" })).rejects.toThrow(
       /@memory\(FakeVectorStoreB\).*not registered/s,

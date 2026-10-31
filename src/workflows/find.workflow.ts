@@ -1,4 +1,4 @@
-import { Workflow, loop, untilAnswered } from "@thenajs/core";
+import { Workflow, loop, untilAnswered } from "@harness-js/core";
 import { FinderAgent } from "../agents/finder/finder.agent.js";
 import { ExplorerState } from "./explorer.state.js";
 

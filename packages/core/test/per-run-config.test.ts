@@ -5,11 +5,11 @@ import {
   DefaultAgentContract,
   Tool,
   Workflow,
-  Thena,
+  Harness,
   context,
   runWorkflow,
-} from "@thenajs/core";
-import type { AgentContext } from "@thenajs/core";
+} from "@harness-js/core";
+import type { AgentContext } from "@harness-js/core";
 import { FakeProvider, PROMPT, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -41,7 +41,7 @@ describe("run({ data })", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "oi", data: { conta: "acme" } });
     await app.dispose();
 
@@ -62,7 +62,7 @@ describe("run({ data })", () => {
     const provider = new FakeProvider([
       { tool: { name: "quem", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider, tools: [QuemTool] })]),
       {},
     );
@@ -74,7 +74,7 @@ describe("run({ data })", () => {
 
   it("NÃO vai para o modelo — a diferença para o `memory`", async () => {
     const provider = new FakeProvider();
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
     await app.run({
       prompt: "oi",
       data: { chaveInterna: "segredo-nunca-visto" },
@@ -116,7 +116,7 @@ describe("run({ data })", () => {
     const providerPai = new FakeProvider([
       { tool: { name: "sub", arguments: { x: "1" } } },
     ]);
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([makeAgent({ provider: providerPai, tools: [SubTool as never] })]),
       {},
     );
@@ -157,7 +157,7 @@ describe("provider como factory", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const a = await app.run({ prompt: "x", data: { conta: "acme" } });
     const b = await app.run({ prompt: "x", data: { conta: "globex" } });
     await app.dispose();
@@ -182,7 +182,7 @@ describe("provider como factory", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const [a, b] = await Promise.all([
       app.run({ prompt: "x", data: { conta: "acme", atraso: 30 } }),
       app.run({ prompt: "x", data: { conta: "globex", atraso: 5 } }),

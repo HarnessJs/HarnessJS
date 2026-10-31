@@ -5,12 +5,12 @@ import {
   DefaultAgentContract,
   Tool,
   Workflow,
-  Thena,
+  Harness,
   context,
   input,
   runWorkflow,
-} from "@thenajs/core";
-import type { Context } from "@thenajs/core";
+} from "@harness-js/core";
+import type { Context } from "@harness-js/core";
 import { FakeProvider, PROMPT, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -74,7 +74,7 @@ describe("as duas portas devolvem a mesma coisa", () => {
     @Workflow({ steps: [Agente] })
     class Fluxo {}
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "x", data: { conta: "acme" } });
     await app.dispose();
 
@@ -139,7 +139,7 @@ describe("as bordas do Proxy", () => {
     );
     const Fluxo = makeWorkflow([Agente]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "1", data: { conta: "a" } });
     await app.run({ prompt: "2", data: { conta: "b" } });
     await app.dispose();
@@ -161,7 +161,7 @@ describe("as bordas do Proxy", () => {
       },
     );
 
-    const app = Thena.create(makeWorkflow([Agente]), {});
+    const app = Harness.create(makeWorkflow([Agente]), {});
     await Promise.all([
       app.run({ prompt: "x", data: { conta: "a" } }),
       app.run({ prompt: "x", data: { conta: "b" } }),

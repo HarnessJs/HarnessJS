@@ -3,10 +3,10 @@
 ## Reportar uma vulnerabilidade
 
 Não abra issue pública. Use
-[Security Advisories](https://github.com/thenajs/ThenaJS/security/advisories/new)
+[Security Advisories](https://github.com/HarnessJs/HarnessJS/security/advisories/new)
 no GitHub, ou escreva para o mantenedor.
 
-Resposta esperada em até 7 dias. O ThenaJS está em `0.x`: correções saem na
+Resposta esperada em até 7 dias. O HarnessJS está em `0.x`: correções saem na
 próxima versão, sem backport para versões anteriores.
 
 ## O que você precisa saber antes de usar em produção
@@ -26,9 +26,9 @@ connection string com senha, `sk-`/`ghp_`/`xoxb-`/`AKIA`, JWT e campos nomeados
 fábrica:
 
 ```ts
-import { redactSecrets } from "@thenajs/core";
+import { redactSecrets } from "@harness-js/core";
 
-export const config: ThenaConfig = {
+export const config: HarnessConfig = {
   redact: (_campo, valor) =>
     redactSecrets(valor).replace(/CPF \d{11}/g, "CPF [REDACTED]"),
 };
@@ -48,10 +48,10 @@ imprime o mesmo conteúdo no stdout, e daí para o seu agregador de logs.
 
 ### Uma tool de shell executa comando arbitrário
 
-O framework **não publica tool de shell**. A que estava no `@thenajs/tools` foi
+O framework **não publica tool de shell**. A que estava no `@harness-js/tools` foi
 removida na 0.10 — uma tool é pequena o bastante para ser sua, e o pacote punha o
 nome do projeto por trás de uma escolha de risco que é da sua aplicação. As
-[Receitas de tools](https://thenajs.github.io/pt/techniques/tool-recipes) trazem
+[Receitas de tools](https://harnessjs.github.io/pt/techniques/tool-recipes) trazem
 uma para copiar, com o aviso.
 
 Se você usar uma: ela dá ao modelo **execução de comando** com as permissões do

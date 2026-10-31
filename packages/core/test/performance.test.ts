@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { Thena, loop, runWorkflow, untilAnswered } from "@thenajs/core";
+import { Harness, loop, runWorkflow, untilAnswered } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /**
@@ -170,7 +170,7 @@ describe("trabalho repetido por chamada", () => {
     ]);
 
     const montagens: number[] = [];
-    const app = Thena.create(
+    const app = Harness.create(
       makeWorkflow([
         loop({
           steps: [makeAgent({ provider, tools: [eco()] })],
@@ -202,7 +202,7 @@ describe("memória do report", () => {
     const provider = new FakeProvider([{ content: gigante }]);
 
     const events: number[] = [];
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {
       log: (e) => e.data?.response && events.push(String(e.data.response).length),
     });
     await app.run({ prompt: "vai" });

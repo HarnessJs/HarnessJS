@@ -4,7 +4,7 @@ export type Role = "system" | "user" | "assistant" | "tool";
  * A chamada de tool no formato do provider — o que `chatInternal` devolve em
  * `RawAssistant.toolCalls` e o que aparece em `ctx.turn`/report.
  *
- * Não confundir com o `ToolCall` dos hooks (`@thenajs/core`), que é
+ * Não confundir com o `ToolCall` dos hooks (`@harness-js/core`), que é
  * `{ name, args }`: este usa `arguments`, e traz `id` e `source`.
  */
 export interface ProviderToolCall {

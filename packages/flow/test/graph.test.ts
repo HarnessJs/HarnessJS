@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ExecutionEvent } from "@thenajs/core";
+import type { ExecutionEvent } from "@harness-js/core";
 import { buildTree, layout } from "../src/ui/graph.js";
 import type { FlowEvent } from "../src/types.js";
 

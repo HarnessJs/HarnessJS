@@ -1,9 +1,9 @@
-import type { State } from "@thenajs/agentflow";
+import type { State } from "@harness-js/agentflow";
 import { randomUUID } from "node:crypto";
 import { runWorkflow } from "./runtime/run-workflow.js";
 import type { RunData, WorkflowApp } from "./types.js";
-import type { ThenaPlugin } from "./plugin.js";
-import type { ThenaConfig, LogConfig, ReportOptions } from "./config.js";
+import type { HarnessPlugin } from "./plugin.js";
+import type { HarnessConfig, LogConfig, ReportOptions } from "./config.js";
 import type { ExecutionEvent, ExecutionNode } from "./observability/recorder.js";
 import { ReportRecorder } from "./observability/recorder.js";
 import { drainIndexWrites, writeReport } from "./observability/report.js";
@@ -13,13 +13,13 @@ import { Channel, createRunHandle } from "./run-handle.js";
 
 function createApp<T = string, D extends RunData = RunData>(
   WorkflowClass: Function,
-  config: ThenaConfig = {},
+  config: HarnessConfig = {},
 ): WorkflowApp<T, D> {
   // Instanciados uma vez por app, e compartilhados por todas as runs: uma
   // conexão e um `ensureCollection` por store, não um por execução.
   const stores = (config.stores ?? []).map((Store) => new Store());
 
-  const plugins: ThenaPlugin[] = [];
+  const plugins: HarnessPlugin[] = [];
 
   /** Resolve o sink de log: função do usuário, ou o logger de console. */
   function resolveLogSink(
@@ -54,7 +54,7 @@ function createApp<T = string, D extends RunData = RunData>(
     const onComplete = report
       ? (root: ExecutionNode) => {
           const path = writeReport(root, { ...reportOptions, runId });
-          console.log(`[thena] Report written: ${path}`);
+          console.log(`[harness] Report written: ${path}`);
         }
       : undefined;
 
@@ -90,7 +90,7 @@ function createApp<T = string, D extends RunData = RunData>(
         await plugin.setup?.();
       } catch (err) {
         throw new Error(
-          `[thena] Plugin "${plugin.name}" failed to start: ` +
+          `[harness] Plugin "${plugin.name}" failed to start: ` +
             ((err as Error)?.message ?? String(err)),
           { cause: err },
         );
@@ -184,7 +184,7 @@ function createApp<T = string, D extends RunData = RunData>(
     async dispose() {
       // Drena antes de encerrar os plugins: um plugin que fecha servidor não
       // pode sumir enquanto uma execução ainda escreve nele.
-      for (const { abort } of inFlight) abort(new Error("[thena] app disposed"));
+      for (const { abort } of inFlight) abort(new Error("[harness] app disposed"));
       await Promise.allSettled([...inFlight].map((r) => r.result));
       inFlight.clear();
 
@@ -197,7 +197,7 @@ function createApp<T = string, D extends RunData = RunData>(
         try {
           await plugin.dispose?.();
         } catch (err) {
-          console.error(`[thena] Plugin "${plugin.name}" failed to dispose:`, err);
+          console.error(`[harness] Plugin "${plugin.name}" failed to dispose:`, err);
         }
       }
       plugins.length = 0;
@@ -208,14 +208,14 @@ function createApp<T = string, D extends RunData = RunData>(
 }
 
 /**
- * O ponto de entrada de uma aplicação ThenaJS.
+ * O ponto de entrada de uma aplicação HarnessJS.
  *
  * ```ts
- * import { Thena } from "@thenajs/core";
+ * import { Harness } from "@harness-js/core";
  *
  * async function bootstrap() {
- *   const app = Thena.create(ExplorerWorkflow, { log: true, report: true });
- *   await app.use(thenaFlow({ port: 4100 }));
+ *   const app = Harness.create(ExplorerWorkflow, { log: true, report: true });
+ *   await app.use(harnessFlow({ port: 4100 }));
  *
  *   console.log(await app.run({ prompt: "Olá" }));
  *   await app.dispose();
@@ -229,22 +229,22 @@ function createApp<T = string, D extends RunData = RunData>(
  * concorrentes, do mesmo app ou de apps diferentes no mesmo processo, não se
  * contaminam.
  */
-export const Thena = {
+export const Harness = {
   create: createApp,
 };
 
 /**
- * @deprecated Use `Thena.create(...)`, que não é `async`:
+ * @deprecated Use `Harness.create(...)`, que não é `async`:
  *
  * ```ts
- * const app = Thena.create(MeuWorkflow, config);   // sem await
+ * const app = Harness.create(MeuWorkflow, config);   // sem await
  * ```
  *
  * Mantido para não quebrar quem veio do 0.6.
  */
 export async function bootstrapWorkflow<T = string, D extends RunData = RunData>(
   WorkflowClass: Function,
-  config: ThenaConfig = {},
+  config: HarnessConfig = {},
 ): Promise<WorkflowApp<T, D>> {
   return createApp<T, D>(WorkflowClass, config);
 }

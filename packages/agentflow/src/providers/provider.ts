@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { ToolOutput, ToolType, toToolOutput } from "../tools/index.js";
 import { normalizeToolCallEnvelope, parser } from "./utils/index.js";
 import { Message, ProviderToolCall } from "../state/index.js";
@@ -163,8 +164,13 @@ export class Providers extends HttpTransport {
     // tool call: usa o nativo quando o provider o trouxe; senão, tenta
     // extrair do texto (fallback p/ modelos locais que emitem JSON no content).
     const native = raw.toolCalls?.[0];
+    // O id nasce aqui quando o provider não manda um (o Ollama nunca manda).
+    // Gerá-lo só na serialização dava um id diferente a cada turno e deixava o
+    // resultado da tool sem `toolCallId`: o pedido e a resposta descasavam, e a
+    // OpenAI recusava (400) um history vindo de um agente Ollama — justo a
+    // mistura de modelos locais e pagos que o ADR-025 promete.
     const call: ProviderToolCall | null = native
-      ? { ...native, source: "native" }
+      ? { ...native, id: native.id ?? newCallId(), source: "native" }
       : this.rescueToolCalls
         ? this.extractToolCall(content, tools)
         : null;
@@ -278,7 +284,7 @@ export class Providers extends HttpTransport {
       if (!tools.some((t) => t.name === base.name)) continue;
 
       return {
-        id: `call_${Date.now()}`,
+        id: newCallId(),
         name: base.name,
         arguments: base.arguments,
         source: "rescued",
@@ -319,4 +325,13 @@ export class Providers extends HttpTransport {
   public embed(_input?: string): Promise<number[]> {
     return Promise.resolve([]);
   }
+}
+
+/**
+ * Id de tool call gerado pelo framework. Aleatório, e não `Date.now()`: duas
+ * chamadas no mesmo milissegundo ganhavam o mesmo id. Curto o bastante para os
+ * limites de tamanho que alguns servidores compatíveis com OpenAI impõem.
+ */
+function newCallId(): string {
+  return `call_${randomUUID().replace(/-/g, "").slice(0, 24)}`;
 }

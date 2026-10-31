@@ -12,7 +12,7 @@ import {
 } from "../src/templates.js";
 
 /**
- * O CLI é o primeiro contato de todo usuário: `thena create` roda antes de
+ * O CLI é o primeiro contato de todo usuário: `harness create` roda antes de
  * qualquer linha de documentação ser lida. Um defeito aqui não vira issue —
  * vira desistência silenciosa.
  *
@@ -46,8 +46,8 @@ describe("nomes", () => {
 
   it("o sufixo é acrescentado sem olhar se já estava lá", () => {
     // Verruga conhecida, fixada aqui como comportamento e não como intenção:
-    // `thena g agent explorer-agent` gera `ExplorerAgentAgent`. O caminho
-    // documentado é `thena g agent explorer`, então isso não morde ninguém que
+    // `harness g agent explorer-agent` gera `ExplorerAgentAgent`. O caminho
+    // documentado é `harness g agent explorer`, então isso não morde ninguém que
     // siga a doc — e consertar muda o nome de classe gerado, o que é outra
     // tarefa, com outro nome.
     expect(classNameFromAgent("explorer-agent")).toBe("ExplorerAgentAgent");
@@ -83,13 +83,13 @@ describe("o projeto gerado", () => {
     expect(pkg.type).toBeUndefined();
   });
 
-  it("a versão pedida do @thenajs/core acompanha a do próprio CLI", () => {
-    // Esta é a trava que faltava. O `THENA_VERSION` é um literal no
+  it("a versão pedida do @harness-js/core acompanha a do próprio CLI", () => {
+    // Esta é a trava que faltava. O `HARNESS_VERSION` é um literal no
     // `templates.ts`, e numa release já ficou para trás — o projeto gerado
     // passa a pedir uma versão que não existe no npm, e o usuário novo
     // esbarra nisso no primeiro `npm install`.
     const pkg = JSON.parse(arquivo("app", "package.json"));
-    expect(pkg.dependencies["@thenajs/core"]).toBe(versaoDoCli);
+    expect(pkg.dependencies["@harness-js/core"]).toBe(versaoDoCli);
   });
 
   it("o tsconfig liga os decorators, sem os quais o @Agent não compila", () => {
@@ -110,7 +110,7 @@ describe("o agente gerado", () => {
 
     expect(ts).toContain("export class ExplorerAgent {}");
     expect(ts).toContain('prompt: "./explorer.agent.md"');
-    expect(ts).toContain('from "@thenajs/core"');
+    expect(ts).toContain('from "@harness-js/core"');
     expect(ts).toContain("contract: ExplorerAgentContract");
   });
 

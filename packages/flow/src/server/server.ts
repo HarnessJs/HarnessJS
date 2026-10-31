@@ -7,7 +7,7 @@ import {
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { ExecutionEvent } from "@thenajs/core";
+import type { ExecutionEvent } from "@harness-js/core";
 import type { FlowOptions } from "../types.js";
 import { RunHistory } from "./memory.js";
 
@@ -64,7 +64,7 @@ export class FlowServer {
           err.code === "EADDRINUSE"
             ? new Error(
                 `a porta ${this.port} já está em uso. Passe outra em ` +
-                  `thenaFlow({ port: … }).`,
+                  `harnessFlow({ port: … }).`,
                 { cause: err },
               )
             : err,
@@ -89,7 +89,7 @@ export class FlowServer {
     this.heartbeat.unref();
 
     if (this.opts.log !== false) {
-      console.log(`[thena-flow] Live run at ${this.url}`);
+      console.log(`[harness-flow] Live run at ${this.url}`);
     }
   }
 

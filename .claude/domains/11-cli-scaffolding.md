@@ -1,11 +1,11 @@
 # Domain: CLI & scaffolding
 
-`thena create` and `thena g agent`. Small, and completely untested.
+`harness create` and `harness g agent`. Small, and completely untested.
 
 ## ⚠️ Read this first
 
 `packages/cli` has **zero tests** for 333 lines that generate whole projects. A
-mistake here does not fail CI; it fails for a user running `thena create`
+mistake here does not fail CI; it fails for a user running `harness create`
 tomorrow. Verify by hand:
 
 ```bash
@@ -16,7 +16,7 @@ cd smoke-test && npm install && npx tsc --noEmit
 
 ## Responsibility
 
-Scaffold a new ThenaJS project, and generate an agent pair (`.agent.ts` +
+Scaffold a new HarnessJS project, and generate an agent pair (`.agent.ts` +
 `.agent.md`) inside one.
 
 ## Key files
@@ -26,16 +26,16 @@ Scaffold a new ThenaJS project, and generate an agent pair (`.agent.ts` +
 | `packages/cli/src/index.ts` | Argument parsing, `create`, `generateAgent`, usage text |
 | `packages/cli/src/templates.ts` | `pascal`, `classNameFromAgent`, `agentTsTemplate`, `agentMdTemplate`, `projectFiles` |
 
-Run it in-repo with `npm run thena -- g agent explorer`.
+Run it in-repo with `npm run harness -- g agent explorer`.
 
 ## Public API
 
-The command line itself: `thena create <name>` (alias `new`),
-`thena g agent <name>`, `-v`, `-h`.
+The command line itself: `harness create <name>` (alias `new`),
+`harness g agent <name>`, `-v`, `-h`.
 
 ## Depends on
 
-Nothing at runtime. It emits code that depends on `@thenajs/core`.
+Nothing at runtime. It emits code that depends on `@harness-js/core`.
 
 ## Invariants
 
@@ -53,8 +53,8 @@ Nothing at runtime. It emits code that depends on `@thenajs/core`.
 
 ## Dangerous
 
-- **`THENA_VERSION = "0.10.0"` is hardcoded** at `templates.ts:54` and pins the
-  `@thenajs/core` dependency of every generated project. It does not track the
+- **`HARNESS_VERSION = "0.10.0"` is hardcoded** at `templates.ts:54` and pins the
+  `@harness-js/core` dependency of every generated project. It does not track the
   package versions. On a release bump, this must move too (CURRENT_STATE.md).
 - The generated `tsconfig` sets `experimentalDecorators` and
   `emitDecoratorMetadata`; without the first, `@Agent` does not compile.
@@ -76,8 +76,8 @@ Usage text, console wording.
 ## Needs care
 
 `projectFiles` — every field is a promise to someone's future project. Anything
-touching `THENA_VERSION`, the build script, or the tsconfig.
+touching `HARNESS_VERSION`, the build script, or the tsconfig.
 
 ## Relations
 
-Emits code consuming **04** (decorators) and **01** (`Thena.create`). ADR-017.
+Emits code consuming **04** (decorators) and **01** (`Harness.create`). ADR-017.

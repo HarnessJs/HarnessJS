@@ -58,7 +58,7 @@ must not change, and how you will prove the second part.
 
 - Match surrounding style: comments explain *why* and name the rejected
   alternative; error messages name the class, the parameter and the fix; errors
-  are `Error`s prefixed `[thena]`.
+  are `Error`s prefixed `[harness]`.
 - Do not touch anything the task did not ask for. A tempting adjacent fix is a
   separate report, not a separate edit.
 - Do not add dependencies.

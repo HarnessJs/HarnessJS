@@ -1,14 +1,14 @@
-# @thenajs/agentflow
+# @harness-js/agentflow
 
-O engine de execução do [ThenaJS](https://github.com/thenajs/ThenaJS): pipeline,
+O engine de execução do [HarnessJS](https://github.com/HarnessJs/HarnessJS): pipeline,
 providers, estado, tools e memória vetorial.
 
 **Você provavelmente não quer instalar este pacote diretamente.** Use o
-[`@thenajs/core`](https://www.npmjs.com/package/@thenajs/core), que reexporta
+[`@harness-js/core`](https://www.npmjs.com/package/@harness-js/core), que reexporta
 tudo o que é público daqui e acrescenta os decorators e o runtime.
 
 ```bash
-npm install @thenajs/agentflow zod
+npm install @harness-js/agentflow zod
 ```
 
 > `zod` é **peerDependency**: o schema das tools tem que vir da mesma instância
@@ -36,14 +36,14 @@ raciocínio, decide entre tool call nativa e resgatada do texto, valida os
 argumentos contra o schema, executa a tool, calcula o custo e aplica o retry.
 
 ```ts
-import { Providers } from "@thenajs/agentflow";
+import { Providers } from "@harness-js/agentflow";
 import type {
   Message,
   ProviderCredentials,
   RawAssistant,
   SamplingParams,
   ToolType,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 
 type MinhasCredentials = ProviderCredentials & { apiKey: string };
 
@@ -71,7 +71,7 @@ retry e timeout sem código.
 ## Escrever um banco vetorial
 
 Mesmo modelo: estenda `VectorStore`, implemente as seis operações, e o
-transporte vem de graça. O `@thenajs/qdrant-client` é a implementação de
+transporte vem de graça. O `@harness-js/qdrant-client` é a implementação de
 referência.
 
 ## Resgate de tool call

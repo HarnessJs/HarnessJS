@@ -12,14 +12,14 @@ safety net. Treat changes there as unverifiable by any check in this repository.
 
 ## Responsibility
 
-Consume `ExecutionEvent`s via `ThenaPlugin.onEvent`, keep a short in-memory
+Consume `ExecutionEvent`s via `HarnessPlugin.onEvent`, keep a short in-memory
 history, serve a React graph, and push updates over SSE.
 
 ## Key files
 
 | File | What |
 |---|---|
-| `packages/flow/src/plugin.ts` | `thenaFlow(options)` → `ThenaPlugin` |
+| `packages/flow/src/plugin.ts` | `harnessFlow(options)` → `HarnessPlugin` |
 | `packages/flow/src/server/server.ts` | `FlowServer` — `node:http`, SSE, static files |
 | `packages/flow/src/server/memory.ts` | `RunHistory` — per-run attribution, sequencing, cap |
 | `packages/flow/src/types.ts` | The wire contract: `FlowEvent`, `FlowRun`, `FlowSnapshot`, `FlowOptions` |
@@ -27,12 +27,12 @@ history, serve a React graph, and push updates over SSE.
 
 ## Public API
 
-`thenaFlow(options?)` and the `FlowOptions` type (`port` 4100, `host`
+`harnessFlow(options?)` and the `FlowOptions` type (`port` 4100, `host`
 127.0.0.1, `maxRuns` 20, `log` true).
 
 ## Depends on
 
-`@thenajs/core` for `ExecutionEvent` and `ThenaPlugin` only. Nothing depends on
+`@harness-js/core` for `ExecutionEvent` and `HarnessPlugin` only. Nothing depends on
 Flow.
 
 ## Invariants

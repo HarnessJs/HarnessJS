@@ -4,6 +4,49 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 Em `0.x`, mudanças que quebram compatibilidade sobem o **minor** — é o que impede
 que `^0.x.y` as instale sozinho.
 
+## [Unreleased]
+
+### ⚠️ Quebras — ThenaJS agora é HarnessJS
+
+| O quê | O que fazer |
+| --- | --- |
+| Pacotes `@thenajs/*` viraram `@harness-js/*` | troque os imports e as dependências: `@thenajs/core` → `@harness-js/core` |
+| `Thena.create` virou `Harness.create` | renomeie a chamada |
+| `ThenaConfig` / `ThenaPlugin` viraram `HarnessConfig` / `HarnessPlugin` | renomeie os tipos |
+| `thenaFlow()` virou `harnessFlow()` | renomeie a chamada |
+| O binário `thena` da CLI virou `harness` | `harness create`, `harness g agent` |
+
+Não há aliases com os nomes antigos. As entradas abaixo já usam os nomes novos.
+
+### 🐛 Correção — o contexto de um contrato chega organizado ao modelo
+
+Desde a 0.13, um `AgentContract` que devolvia um objeto (como o gerado pelo
+`harness g agent` da 0.13.1) tinha o objeto inteiro serializado em JSON numa única
+mensagem `user`: o prompt perdia o papel `system`, o history chegava como texto
+escapado e as chamadas de tool deixavam de ser turnos.
+
+Agora `instructions` vira o `system`, todo valor `Message[]` vira os turnos da
+conversa e as demais chaves viram seções `<chave>…</chave>` legíveis. A ordem
+das chaves é a ordem do contexto: seções antes da conversa entram no `system`,
+seções depois dela vão ao final, o que preserva o cache de prompt do que vem
+antes. Contratos existentes não precisam mudar. Quem devolve `Message[]` não é
+afetado.
+
+### 🐛 Correção — tool calls sem id quebravam a troca de provider
+
+O Ollama não manda id nas tool calls. O id era inventado só ao serializar para a
+OpenAI, diferente a cada turno, e o resultado da tool ia sem `toolCallId`: um
+history vindo de um agente Ollama virava `400` no agente OpenAI seguinte. Agora
+toda tool call ganha o id quando nasce, o mesmo no pedido e no resultado.
+
+### Mudança — `parallel_tool_calls: false` na OpenAI
+
+O framework atende uma tool call por turno (ADR-025), mas não avisava a API: o
+modelo podia pedir várias de uma vez, e as demais eram descartadas sem aviso. O
+`OpenAIProvider` agora envia `parallel_tool_calls: false` quando há tools. Um
+servidor compatível que não aceite o campo:
+`raw: { parallel_tool_calls: undefined }`.
+
 ## [0.12.0] — 2026-08-24
 
 ### ⚠️ Quebras
@@ -64,7 +107,7 @@ O framework injetava português no prompt e nas observações que o modelo lê:
 + "\n… [truncated]"
 ```
 
-Os prompts que o `thena create` e o `thena g agent` geram também passaram a ser
+Os prompts que o `harness create` e o `harness g agent` geram também passaram a ser
 em inglês. Projetos já gerados não mudam — o markdown está no seu repositório.
 
 Três efeitos que valem atenção:
@@ -113,7 +156,7 @@ O padrão documentado de manter um ramo fora do transcript continua igual:
 ctx.state.set("history", ctx.state.history.slice(0, -1));   // Message[] ✓
 ```
 
-A mensagem de erro do `append` também ficou útil: prefixo `[thena]`, o nome do
+A mensagem de erro do `append` também ficou útil: prefixo `[harness]`, o nome do
 método, a chave recebida e a causa provável — antes era `State is not an array.`
 
 ### `contextWindow({ notice })` — `warnIndexFailure` virou alias
@@ -133,13 +176,13 @@ significando outra — a nota que substitui o histórico cortado.
 O alias fica marcado `@deprecated`. Quando os dois vierem, `notice` vence. A
 remoção é uma versão futura, com entrada própria aqui.
 
-### `@thenajs/core` declara o peer de `zod`
+### `@harness-js/core` declara o peer de `zod`
 
 Correção de empacotamento. **Quem já usa `zod` 4 não sente nada** — não há
 mudança de API nem de comportamento.
 
 ```diff
-  "dependencies": { "@thenajs/agentflow": "^0.11.0" },
+  "dependencies": { "@harness-js/agentflow": "^0.11.0" },
 + "peerDependencies": { "zod": "^4.0.0" }
 ```
 
@@ -152,7 +195,7 @@ O estrago, medido num projeto limpo com `zod` 3 já instalado:
 
 ```
 node_modules/zod                            3.25.76   ← o do seu projeto
-node_modules/@thenajs/core/node_modules/zod 4.4.3     ← instalado sem aviso
+node_modules/@harness-js/core/node_modules/zod 4.4.3     ← instalado sem aviso
 ```
 
 Você escrevia o schema com uma cópia e o framework o convertia com a outra. A
@@ -168,25 +211,25 @@ avisa. Se a sua for a 3, o erro passa a ser `z.toJSONSchema is not a function` �
 que nomeia o que falta (`toJSONSchema` chegou no `zod` 4) em vez de estourar
 dentro do conversor.
 
-O `README` também estava errado: dizia `npm i @thenajs/core`, sem o `zod`. Agora
-diz `npm i @thenajs/core zod`. O `thena create` já gerava `zod: "^4.0.0"` no
+O `README` também estava errado: dizia `npm i @harness-js/core`, sem o `zod`. Agora
+diz `npm i @harness-js/core zod`. O `harness create` já gerava `zod: "^4.0.0"` no
 projeto novo, e `docs/get-started/installation` já mandava instalar os dois — o
 caminho quebrado era o de quem copiava a linha do README.
 
-### `@thenajs/qdrant-client` depende do engine, não do core
+### `@harness-js/qdrant-client` depende do engine, não do core
 
 ```diff
-- "dependencies": { "@thenajs/core": "^0.11.0" }
-+ "dependencies": { "@thenajs/agentflow": "^0.11.0" }
+- "dependencies": { "@harness-js/core": "^0.11.0" }
++ "dependencies": { "@harness-js/agentflow": "^0.11.0" }
 ```
 
-`VectorStore` mora em `@thenajs/agentflow`; o `core` apenas o reexportava. Quem
+`VectorStore` mora em `@harness-js/agentflow`; o `core` apenas o reexportava. Quem
 instalava só o cliente Qdrant baixava junto decorators, DI, bootstrap, recorder e
 report — nada disso usado.
 
 A superfície pública do pacote é a mesma (`QdrantStore`, `QdrantCredentials`), e
-`import { QdrantStore } from "@thenajs/qdrant-client"` não muda. O único jeito de
-sentir é dependência fantasma: importar `@thenajs/core` sem tê-lo no seu
+`import { QdrantStore } from "@harness-js/qdrant-client"` não muda. O único jeito de
+sentir é dependência fantasma: importar `@harness-js/core` sem tê-lo no seu
 `package.json`, contando com o hoisting para achá-lo por baixo do Qdrant. Se for
 o seu caso, declare o `core` como dependência direta — que é o que ele sempre
 foi, para qualquer projeto que use os decorators.
@@ -216,7 +259,7 @@ política de erro. Uma lista passada por fora perderia as cinco.
 Só funciona no `execute`: no construtor a lista ainda não existe, porque as tools
 são embrulhadas por invocação do passo. Usar no construtor dá erro dizendo isso.
 
-### `@thenajs/tools` está de volta, com a `ParallelTool`
+### `@harness-js/tools` está de volta, com a `ParallelTool`
 
 O pacote foi removido na `0.10.0` por dois motivos. O principal era
 posicionamento: ele existia para publicar uma tool de shell, e entregar execução
@@ -226,7 +269,7 @@ motivo continua valendo — **a `ShellTool` não voltou e não volta**.
 O que voltou é outra coisa:
 
 ```ts
-import { ParallelTool } from "@thenajs/tools";
+import { ParallelTool } from "@harness-js/tools";
 
 @Agent({ tools: [ReadFileTool, ListDirTool, ParallelTool], … })
 export class ExplorerAgent {}
@@ -272,9 +315,9 @@ foi para o `CONTRIBUTING.md`.
 
 | O quê | O que fazer |
 | --- | --- |
-| O pacote `@thenajs/tools` foi **removido** | copie a tool que você usava das [Receitas de tools](https://thenajs.github.io/pt/techniques/tool-recipes) para `src/tools/` |
-| `ThenaConfig.memory` virou `ThenaConfig.stores` | renomeie o campo; o array e o resto continuam iguais |
-| O protocolo SSE do `@thenajs/flow` passou a inglês | nada a fazer se você só usa `thenaFlow()`; se você importa `FlowRun`/`FlowSnapshot`, veja a tabela abaixo |
+| O pacote `@harness-js/tools` foi **removido** | copie a tool que você usava das [Receitas de tools](https://harnessjs.github.io/pt/techniques/tool-recipes) para `src/tools/` |
+| `HarnessConfig.memory` virou `HarnessConfig.stores` | renomeie o campo; o array e o resto continuam iguais |
+| O protocolo SSE do `@harness-js/flow` passou a inglês | nada a fazer se você só usa `harnessFlow()`; se você importa `FlowRun`/`FlowSnapshot`, veja a tabela abaixo |
 | `parallel` passou a anexar na ordem de declaração | nada a fazer, a não ser que você dependesse da ordem de conclusão — que variava a cada execução |
 | `ctx.output` depois de um `parallel` é o do último ramo **declarado** | se você lia `ctx.output` esperando um ramo específico, leia `ctx.state` |
 
@@ -284,7 +327,7 @@ escreve em dez minutos, o custo não se paga. Pior, punha o nome do projeto por
 trás da escolha de dar execução arbitrária de comando a um modelo, que é decisão
 da aplicação e não do framework.
 
-O `thena create` deixa de instalar o pacote, e o exemplo da documentação passa a
+O `harness create` deixa de instalar o pacote, e o exemplo da documentação passa a
 usar uma tool de ler arquivo.
 
 ### `parallel` virou determinístico
@@ -352,8 +395,8 @@ viajava no mesmo JSON com dois nomes: a duração era `durationMs` no evento e
 
 O protocolo é **interno ao pacote** (ADR-021): servidor e interface são
 publicados juntos, e a forma documentada de consumir o stream de fora é
-`ThenaPlugin.onEvent`, que entrega o `ExecutionEvent` do core — esse não muda.
-Quem só chama `thenaFlow()` não faz nada.
+`HarnessPlugin.onEvent`, que entrega o `ExecutionEvent` do core — esse não muda.
+Quem só chama `harnessFlow()` não faz nada.
 
 O `packages/flow/test/protocol.test.ts` passa a fixar rotas, nomes de evento e
 formato de frame. Era a única fronteira de rede do repositório sem verificação:
@@ -385,7 +428,7 @@ passaram porque nada no repositório roda o typecheck da UI — o
   Agora a lista é a env `PACOTES` e um passo anterior a qualquer `npm publish`
   reprova se ela e `packages/` divergirem, nos dois sentidos.
 
-### `ThenaConfig.memory` → `ThenaConfig.stores`
+### `HarnessConfig.memory` → `HarnessConfig.stores`
 
 O campo guarda `VectorStoreCtor[]` — uma lista de **bancos**, não de memórias. O
 nome antigo colidia com o `run({ memory })`, que é outra coisa: o contexto que o
@@ -412,7 +455,7 @@ seções, e paridade entre os idiomas validada no CI. As URLs anteriores
 ## [0.9.0] — 2026-08-07
 
 Isolamento por execução, cancelamento, streaming, custo e configuração por
-execução. É a release que torna o ThenaJS utilizável em processo de longa
+execução. É a release que torna o HarnessJS utilizável em processo de longa
 duração: antes, o framework guardava três estados mutáveis no escopo de módulo,
 e duas runs concorrentes se sobrescreviam — um servidor HTTP que chamasse
 `app.run()` por request estava quebrado, e uma suíte de testes não tinha como
@@ -436,10 +479,10 @@ de propósito.
 | O orçamento vale **dentro** das runs aninhadas | passe `budget` explícito ao `runtime.run()` se quiser teto próprio |
 | A execução só é observada quando alguém observa | use `run({ observe: true })` se usa `onEvent`/`onToken` sem `report`, `log` nem plugin |
 
-Continuam funcionando, como alias: `bootstrapWorkflow` (use `Thena.create`) e
+Continuam funcionando, como alias: `bootstrapWorkflow` (use `Harness.create`) e
 `AgentContext` (use `Context`).
 
-O `thena create` passa a gerar projeto CommonJS, no padrão do `nest new` — o que
+O `harness create` passa a gerar projeto CommonJS, no padrão do `nest new` — o que
 muda só projeto novo. E o `engines` de todos os pacotes pede **Node ≥ 20.19**,
 versão em que `require()` de ESM a partir de CommonJS entrou.
 
@@ -514,7 +557,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   - **`ctx.data` deixou de ser opcional.** Sempre existe (objeto vazio quando
     não informado), então o `?.` sumiu do acesso mais frequente da API.
 
-- ⚠️ **O `thena create` passa a gerar um projeto CommonJS**, como o `nest new`.
+- ⚠️ **O `harness create` passa a gerar um projeto CommonJS**, como o `nest new`.
 
   Em ESM nativo o Node não completa extensão, então todo import relativo tinha
   que apontar para o arquivo **de saída**: `from "./config.js"` dentro de um
@@ -529,7 +572,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
 
   ```ts
   async function bootstrap() {
-    const app = Thena.create(AssistantWorkflow, config);
+    const app = Harness.create(AssistantWorkflow, config);
     console.log(await app.run({ input: { message } }));
     await app.dispose();
   }
@@ -537,7 +580,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   bootstrap();
   ```
 
-  Os pacotes `@thenajs/*` **continuam ESM** — muda só o projeto gerado. O Node
+  Os pacotes `@harness-js/*` **continuam ESM** — muda só o projeto gerado. O Node
   moderno permite `require()` de ESM a partir de CommonJS, e é por isso que o
   `engines` subiu para **`>=20.19`**, versão em que esse suporte entrou.
 
@@ -605,7 +648,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   Cancelamento não passa pelo `onError` do agente: o hook existe para o agente
   se recuperar de falha, e "alguém mandou parar" não é falha.
 
-- **`ThenaConfig.redact` — mascaramento de segredo, ligado por padrão.** O
+- **`HarnessConfig.redact` — mascaramento de segredo, ligado por padrão.** O
   report grava a conversa inteira em disco; mensagem de erro é o lugar clássico
   de vazar credencial. Padrões de fábrica: `Bearer`, `Basic`, connection string
   com senha, `sk-`/`ghp_`/`xoxb-`/`AKIA`, JWT e campos nomeados (`api_key`,
@@ -677,7 +720,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   rede não respeita fronteira de linha nem de caractere UTF-8.
 
 
-- **Middlewares em `ThenaPlugin`.** Além de observar com `onEvent`, um plugin
+- **Middlewares em `HarnessPlugin`.** Além de observar com `onEvent`, um plugin
   agora **intercepta**: `tool` envolve cada execução de tool e `chat` cada
   chamada ao modelo, podendo medir, transformar ou curto-circuitar.
 
@@ -720,7 +763,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   - **`maxIterations` passou a ter default `10`.** Era `Infinity`.
 
   `Infinity` desliga qualquer um dos dois. Os defaults ficam no `loop()` do
-  `@thenajs/core`; o `Pipeline.loop` do engine continua sendo a primitiva crua,
+  `@harness-js/core`; o `Pipeline.loop` do engine continua sendo a primitiva crua,
   sem teto.
 
 - **`stoppedBy` no nó `loop` do report** — `"until"`, `"exhausted"`, `"fails"`
@@ -745,7 +788,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
     afeta o outro;
   - testes rodam em paralelo sem interferência.
 - **Overrides por execução** em `app.run({ ... })`: `report`, `log` e
-  `toolErrors` sobrescrevem o `ThenaConfig` só naquela run.
+  `toolErrors` sobrescrevem o `HarnessConfig` só naquela run.
 - **`runId` em `ExecutionEvent`** — todo evento diz a qual execução pertence.
   Sem isso, um consumidor que recebe eventos de runs concorrentes não tinha como
   separá-los.
@@ -787,7 +830,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   não conserta, use `FatalToolError`. Para escolher o texto que ele lê, devolva
   `{ content, isError: true }` — que continua sendo o caminho preferível.
 
-  **Migração:** remova `toolErrors` do seu `ThenaConfig`. Se você dependia do
+  **Migração:** remova `toolErrors` do seu `HarnessConfig`. Se você dependia do
   `"throw"` para falhar rápido, lance `FatalToolError` nas tools onde isso
   importa.
 
@@ -809,7 +852,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   execuções concorrentes sobrescreviam o report uma da outra. O
   `report/index.html` da raiz passa a ser o índice das runs.
 
-- **`MemoriaDeRuns` (`@thenajs/flow`) atribui por `runId`.** Usava um cursor
+- **`MemoriaDeRuns` (`@harness-js/flow`) atribui por `runId`.** Usava um cursor
   único com a fronteira inferida por `depth === 0` — o que funcionava com uma
   execução por vez e embaralhava duas.
 
@@ -943,7 +986,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   chamava `z.toJSONSchema()` com outro.
 
 
-- O `memory` do `ThenaConfig` era resolvido na **compilação** dos passos, que
+- O `memory` do `HarnessConfig` era resolvido na **compilação** dos passos, que
   acontecia fora do escopo da execução. Com o `RunContext`, a compilação passou
   para dentro do escopo; fora dele, o runtime agora falha alto em vez de cair
   nos defaults em silêncio.
@@ -954,7 +997,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
 
 - `setRecorder` / `resetRecorder` / `recorder()` e `setRuntimeSettings` /
   `resetRuntimeSettings` / `settings()` — eram internos, nunca exportados pelo
-  `@thenajs/core`. Idem `budget()` / `withBudget()`, absorvidos pelo
+  `@harness-js/core`. Idem `budget()` / `withBudget()`, absorvidos pelo
   `RunContext`, e `ReportRecorder.capturarConteudo()`, que existia só para
   mutar um recorder compartilhado depois do fato.
 
@@ -967,7 +1010,7 @@ versão em que `require()` de ESM a partir de CommonJS entrou.
   enviados, estabilidade do prefixo do prompt e trabalho repetido. Protegem o
   que regride em silêncio.
 - ESLint, Prettier e `.editorconfig`, rodando no CI.
-- `README.md` em `@thenajs/core` e `@thenajs/agentflow`, mais `SECURITY.md` e
+- `README.md` em `@harness-js/core` e `@harness-js/agentflow`, mais `SECURITY.md` e
   `CONTRIBUTING.md`.
 
 ## [0.6.0] — 2026-08-04
@@ -979,14 +1022,14 @@ faltava ver enquanto acontece.
 
 ### Adicionado
 
-- **`@thenajs/flow`** — pacote novo. Sobe um site local que desenha a árvore da
+- **`@harness-js/flow`** — pacote novo. Sobe um site local que desenha a árvore da
   execução em tempo real, com ReactFlow: workflow, loops, agentes, chamadas ao
   modelo e tools aparecendo conforme acontecem. Clicar num nó abre o prompt
   enviado, a resposta, o I/O da tool, os tokens e o erro.
 
   ```ts
   const app = await bootstrapWorkflow(MeuWorkflow, { log: true });
-  await app.use(thenaFlow());
+  await app.use(harnessFlow());
   await app.run({ input: { message: "Olá" } });
   ```
 
@@ -995,11 +1038,11 @@ faltava ver enquanto acontece.
   pacote; não há passo de build no seu projeto. Sem dependência de runtime: o
   transporte é SSE em cima do `node:http`.
 
-- **`app.use(plugin)` e `app.dispose()`** — a interface `ThenaPlugin` abre o
+- **`app.use(plugin)` e `app.dispose()`** — a interface `HarnessPlugin` abre o
   stream de execução para qualquer destino, não só para o Flow:
 
   ```ts
-  export function meuPlugin(): ThenaPlugin {
+  export function meuPlugin(): HarnessPlugin {
       return {
           name: "meu-plugin",
           setup: () => conectar(),      // se lançar, o `use()` rejeita
@@ -1022,8 +1065,8 @@ faltava ver enquanto acontece.
 
 ### Documentação
 
-- Guia novo: [Ver a execução ao vivo](https://thenajs.github.io/guias/flow),
-  com a interface do `ThenaPlugin` para quem quiser escrever o seu.
+- Guia novo: [Ver a execução ao vivo](https://harnessjs.github.io/guias/flow),
+  com a interface do `HarnessPlugin` para quem quiser escrever o seu.
 
 ## [0.5.0] — 2026-07-30
 
@@ -1131,22 +1174,22 @@ uma implementação pronta.
 
 ### Adicionado
 
-- **`@thenajs/qdrant-client`** (pacote novo) — cliente Qdrant nativo sobre a API
+- **`@harness-js/qdrant-client`** (pacote novo) — cliente Qdrant nativo sobre a API
   REST, sem SDK. Requer **Qdrant ≥ 1.10** (o endpoint `/points/query` estreou nessa
   versão). Herda retry e timeout do transporte do framework.
 - **`VectorStore`** — o contrato de um banco vetorial: `ensureCollection`,
   `upsert`, `search`, `remove`, `collectionExists`, `dropCollection`. Estenda para
-  trazer o seu; tudo o que precisa sai do `@thenajs/core`.
+  trazer o seu; tudo o que precisa sai do `@harness-js/core`.
 - **`VectorMemory`** — junta o `embed()` de um provider com um store:
   `remember`, `rememberMany`, `recall`, `forget`. As dimensões da collection são
   **descobertas sozinhas** no primeiro `remember`, pelo tamanho do vetor.
-- **`ThenaConfig.memory`** — o store é registrado **uma vez** para a aplicação, e
+- **`HarnessConfig.memory`** — o store é registrado **uma vez** para a aplicação, e
   todo agente que declarar `VectorMemory` no construtor recebe uma memória sobre
   ele. Uma conexão e um `ensureCollection` por run, independente de quantos
   agentes existem:
 
   ```ts
-  export const config: ThenaConfig = { memory: [MeuQdrant] };
+  export const config: HarnessConfig = { memory: [MeuQdrant] };
 
   @Agent({ provider: LocalOllama, prompt: "./a.agent.md" })
   export class MeuAgente {
@@ -1196,8 +1239,8 @@ agora delega a parte de transporte para `configureTransport()`, herdado da base.
 
 Release sobre autoria de provider: escrever um provider próprio era possível na
 teoria e impossível na prática, porque os tipos necessários não saíam do
-`@thenajs/core` — e o projeto gerado pelo `thena create` não depende do
-`@thenajs/agentflow`.
+`@harness-js/core` — e o projeto gerado pelo `harness create` não depende do
+`@harness-js/agentflow`.
 
 Traz também retry e timeout nas chamadas HTTP dos providers.
 
@@ -1230,7 +1273,7 @@ aditivo — o `ToolCall` antigo continua funcionando por alias.
   esquecer. `OllamaProvider` e `OpenAIProvider` passaram a usá-lo.
 - **`ProviderToolCall`** — a chamada no formato do provider
   (`{ id, name, arguments, source }`), agora com nome próprio.
-- Novos exports em `@thenajs/core`, todos necessários para escrever um provider
+- Novos exports em `@harness-js/core`, todos necessários para escrever um provider
   sem dependência extra: os tipos `RawAssistant`, `ChatParams`,
   `ProviderCredentials`, `ProviderToolCall`, `NormalizedToolCall`; e os valores
   `parser`, `normalizeToolCallEnvelope`, `pruneUndefined`.
@@ -1246,13 +1289,13 @@ aditivo — o `ToolCall` antigo continua funcionando por alias.
 - **`Providers.embed()` passou de `protected` para `public`.** O método existia
   e funcionava nos dois providers, mas era inalcançável de fora — nenhum código
   do repositório o chamava. Agora dá para usar embeddings em user-land.
-- O `ToolCall` do `@thenajs/agentflow` virou alias de `ProviderToolCall`. O nome
+- O `ToolCall` do `@harness-js/agentflow` virou alias de `ProviderToolCall`. O nome
   colidia com o `ToolCall` dos hooks (`{ name, args }`), que tem formato
-  diferente, e quem importava do `@thenajs/core` pegava o errado.
+  diferente, e quem importava do `@harness-js/core` pegava o errado.
 
 ### Depreciado
 
-- `ToolCall` (em `@thenajs/agentflow`) — use `ProviderToolCall`. O alias segue
+- `ToolCall` (em `@harness-js/agentflow`) — use `ProviderToolCall`. O alias segue
   funcionando e será removido numa versão futura.
 
 ### Notas de migração
@@ -1263,7 +1306,7 @@ Três pontos de atenção, nenhum obrigatório:
    trata `429`/`5xx` por fora, use `retry: false` — ou `maxAttempts` menor.
 2. Se você tem uma subclasse de `Providers` que redeclara `embed` como
    `protected`, o TypeScript vai reclamar da visibilidade — troque para `public`.
-3. Se você importa `ToolCall` do `@thenajs/agentflow`, continua compilando; para
+3. Se você importa `ToolCall` do `@harness-js/agentflow`, continua compilando; para
    silenciar o aviso de depreciação, troque para `ProviderToolCall`.
 
 Provider próprio: troque `fetch` por `this.request()` para herdar retry e
@@ -1279,7 +1322,7 @@ timeout. O método devolve `{ response, attempts }`.
   anterior.
 - **`ToolOutput` / `isError`** — uma tool pode sinalizar falha sem lançar; o nó
   do report vira `status: "error"` e `tool_error_rate` deixa de exigir regex.
-  A política de erro é configurável em `ThenaConfig.toolErrors`, com default
+  A política de erro é configurável em `HarnessConfig.toolErrors`, com default
   `"throw"` (o comportamento anterior).
 - **Exaustão do loop** — `onExhausted`, `ctx.loop`, helper `wasExhausted()` e
   `exhausted` no report: parar por `maxIterations` deixa de ser indistinguível

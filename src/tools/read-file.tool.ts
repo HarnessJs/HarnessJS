@@ -1,4 +1,4 @@
-import { Tool, input, state } from "@thenajs/core";
+import { Tool, input, state } from "@harness-js/core";
 import { readFile } from "node:fs/promises";
 import { z } from "zod";
 import { ExplorerState } from "../workflows/explorer.state.js";

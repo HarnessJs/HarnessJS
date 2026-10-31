@@ -1,4 +1,4 @@
-import { OllamaProvider } from "@thenajs/core";
+import { OllamaProvider } from "@harness-js/core";
 
 /**
  * Exemplo de provider. Um provider é uma classe (aqui, subclasse de um

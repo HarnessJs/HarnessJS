@@ -16,7 +16,7 @@ Concluído (branch `feat/run-context`):
 | ✅ | Falha de tool virou observação; `toolErrors` eliminado; `FatalToolError` |
 | ✅ | `maxFails` (consecutivas) e `maxIterations` com default; `stoppedBy` no report |
 | ✅ | `runner.ts` (639 linhas, 5 responsabilidades) quebrado em `di/` + `runtime/` |
-| ✅ | Cadeias de middleware de **tool** e **chat**; `ThenaPlugin.tool` / `.chat` |
+| ✅ | Cadeias de middleware de **tool** e **chat**; `HarnessPlugin.tool` / `.chat` |
 | ✅ | 246 testes em CI (core + engine), com lint e typecheck próprios |
 | ✅ | Mascaramento de segredo ligado por padrão; `ShellTool` com timeout e allowlist |
 | ✅ | `RunHandle`: cancelamento, `runId` síncrono, stream de eventos, `dispose` drenando |
@@ -53,7 +53,7 @@ O que ela rendeu além do previsto:
 - **Duas dívidas ficaram visíveis** como aviso do ESLint, com o motivo no
   config: `no-explicit-any` (24) e `no-unsafe-function-type` (19). A segunda
   merece tarefa própria — introduzir um `ClassLike` e trocar 19 assinaturas,
-  várias públicas, porque hoje `Thena.create(() => {})` compila.
+  várias públicas, porque hoje `Harness.create(() => {})` compila.
 - **`SECURITY.md`** virou mais que canal de reporte: documenta o report gravando
   a conversa em disco, a `ShellTool` sem sandbox, a ausência de defesa contra
   prompt injection e o custo como superfície de risco.
@@ -70,7 +70,7 @@ teste que sobrou.
 | --- | --- | --- |
 | A1 | `zod` de `dependencies` para `peerDependencies` em `agentflow` e `tools`; `engines: { node: ">=20" }` em todos os manifests | 10 min |
 | A2 | ESLint + Prettier + `.editorconfig`, rodando no CI | ~2h |
-| A3 | `README.md` em `@thenajs/core` e `@thenajs/agentflow`; `SECURITY.md`; `CONTRIBUTING.md` | ~3h |
+| A3 | `README.md` em `@harness-js/core` e `@harness-js/agentflow`; `SECURITY.md`; `CONTRIBUTING.md` | ~3h |
 | A4 | **Testes do engine**: `parsers.ts`, `tool-call.ts`, `retry.ts` | ~1 dia |
 | A5 | README + CHANGELOG da seção de middlewares | ~2h |
 
@@ -284,7 +284,7 @@ construído por factory já consegue ler o contexto da run.
 | **`WorkflowStep` aberto** | União fechada + `if/else` em `compileStep`. Adicionar `branch`/`race` exige editar o core. Violação de OCP que sobrevive ao refactor. |
 | **Decorators TC39** | Decorator de parâmetro **não existe** no padrão. Toda a DI de `@input`/`@state`/`@context`/`@memory` depende de um recurso legado sem caminho de migração. Maior risco de longo prazo; precisa de um plano B (API funcional `defineAgent({...})`) antes de virar urgência. |
 | **Tradução para inglês** | API, comentários e docs em português limitam a adoção. Trabalho grande e mecânico; melhor depois que a API parar de mudar. |
-| **`ClassLike` no lugar de `Function`** | 19 assinaturas, várias públicas (`runWorkflow`, `Thena.create`, `getAgentMetadata`). Hoje `Thena.create(() => {})` compila. Visível como aviso do ESLint desde a Fase A. |
+| **`ClassLike` no lugar de `Function`** | 19 assinaturas, várias públicas (`runWorkflow`, `Harness.create`, `getAgentMetadata`). Hoje `Harness.create(() => {})` compila. Visível como aviso do ESLint desde a Fase A. |
 
 ---
 
@@ -318,7 +318,7 @@ O que move mais daqui em diante, em ordem de impacto:
    `ensureCollection` por store", então provavelmente precisa de memoização
    por chave fornecida pelo usuário.
 4. **`ClassLike` no lugar de `Function`** (~1 dia) — 19 assinaturas; hoje
-   `Thena.create(() => {})` compila.
+   `Harness.create(() => {})` compila.
 5. **Verificadores determinísticos dos invariantes sem guarda** (~meio dia) —
    ver a seção abaixo. É o item de melhor relação esforço/retorno da lista.
 6. **Decorators TC39** — o maior risco de longo prazo, sem urgência imediata.
@@ -340,7 +340,7 @@ checáveis por **script**, sem modelo nenhum no meio:
 | **R-27** | teste novo que não move a cobertura | `test:coverage` antes e depois do diff; comparar os números do arquivo tocado |
 | **R-22** | refatoração que edita uma assertion | o diff mudou uma linha `expect(...)` **e** código de produção no mesmo commit |
 | **R-23** | teste que não passa pela API pública | `grep` de import de caminho interno (`../src/`, `packages/*/src/`) dentro de `test/` |
-| **R-19** | ordem de `ThenaConfig.stores` alterada | comparar a ordem do array entre base e head; inserção no meio é o defeito |
+| **R-19** | ordem de `HarnessConfig.stores` alterada | comparar a ordem do array entre base e head; inserção no meio é o defeito |
 
 ### Por que sem LLM
 
@@ -434,7 +434,7 @@ framework os cria, os incrementa e age sobre eles. Ninguém inventaria
 "profundidade de aninhamento" se o framework não aninhasse.
 
 `tenant`, `usuário`, `sessão`, `organização`, `ambiente` — a aplicação tem esses
-conceitos **com ou sem** ThenaJS. Nomeá-los num tipo público os transformaria em
+conceitos **com ou sem** HarnessJS. Nomeá-los num tipo público os transformaria em
 contrato, e o framework passaria a ter que responder o que faz com eles no
 report, no cache e na coleção vetorial. Cada resposta seria uma opinião sobre o
 domínio de outra pessoa.

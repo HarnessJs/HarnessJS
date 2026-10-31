@@ -1,4 +1,4 @@
-import type { Message } from "@thenajs/agentflow";
+import type { Message } from "@harness-js/agentflow";
 import type { ChatMiddleware } from "./chat.js";
 
 /**

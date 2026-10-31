@@ -1,15 +1,15 @@
 {
-  "name": "@thenajs/agentflow",
+  "name": "@harness-js/agentflow",
   "version": "0.13.1",
-  "description": "Engine de execução do ThenaJS: pipeline, providers (Ollama/OpenAI), estado e tools (Zod).",
+  "description": "Engine de execução do HarnessJS: pipeline, providers (Ollama/OpenAI), estado e tools (Zod).",
   "license": "MIT",
   "author": "castroneto",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenajs/ThenaJS.git",
+    "url": "git+https://github.com/HarnessJs/HarnessJS.git",
     "directory": "packages/agentflow"
   },
-  "homepage": "https://github.com/thenajs/ThenaJS#readme",
+  "homepage": "https://github.com/HarnessJs/HarnessJS#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

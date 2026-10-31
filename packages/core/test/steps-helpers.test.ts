@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import {
-  Thena,
+  Harness,
   calledTool,
   loop,
   runWorkflow,
   turnOf,
   untilAnswered,
   wasExhausted,
-} from "@thenajs/core";
-import type { TurnInfo, WorkflowContext } from "@thenajs/core";
+} from "@harness-js/core";
+import type { TurnInfo, WorkflowContext } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /** Os helpers que leem o último turno, e a entrada da run. */
@@ -214,7 +214,7 @@ describe("wasExhausted", () => {
 describe("entrada da run", () => {
   it("o prompt vira a primeira mensagem user", async () => {
     const provider = new FakeProvider();
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
     await app.run({ prompt: "olá mundo" });
     await app.dispose();
 
@@ -224,7 +224,7 @@ describe("entrada da run", () => {
 
   it("memory da run é semeada no state e projetada como system", async () => {
     const provider = new FakeProvider();
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
     await app.run({
       prompt: "oi",
       state: { memory: [JSON.stringify({ sessionId: "abc" })] },

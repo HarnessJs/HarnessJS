@@ -12,14 +12,14 @@ Legend for *Guarded by*:
 
 ## Layering
 
-### R-01 — `@thenajs/agentflow` must never import `@thenajs/core`
+### R-01 — `@harness-js/agentflow` must never import `@harness-js/core`
 The engine is mechanism; core is policy (ADR-001). The reverse direction is
 the whole architecture.
 
-*Verify:* `grep -rn "@thenajs/core" packages/agentflow/src` must return nothing.
+*Verify:* `grep -rn "@harness-js/core" packages/agentflow/src` must return nothing.
 *Guarded by:* **test** — `packages/core/test/architecture.test.ts`. Added
 deliberately, because nothing else stops it: the workspace symlink resolves
-`@thenajs/core` from inside `agentflow` and `tsc` accepts it. The test matches
+`@harness-js/core` from inside `agentflow` and `tsc` accepts it. The test matches
 *imports*, not mentions — `state.types.ts` names the package in a comment on
 purpose.
 
@@ -38,7 +38,7 @@ this (ADR-003).
 *Guarded by:* test (`report.test.ts` asserts the tool node nests under chat).
 
 ### R-26 — Satellite packages depend on the engine, not the core
-`VectorStore` and the provider base live in `@thenajs/agentflow`; `@thenajs/core`
+`VectorStore` and the provider base live in `@harness-js/agentflow`; `@harness-js/core`
 only re-exports them for convenience. A satellite that imports from `core` drags
 decorators, DI, bootstrap, the recorder and the report into an install that only
 wanted a vector store.
@@ -47,8 +47,8 @@ R-01 does not cover this. It watches the arrow *leaving* the engine, and this is
 the arrow *entering* from the satellites — which is exactly where it inverted:
 `qdrant-client` imported `VectorStore` from `core` until 0.11.
 
-*Verify:* `grep -rn "@thenajs/core" packages/qdrant-client/src` must return
-nothing, **and** the package manifest must not depend on `@thenajs/core` either.
+*Verify:* `grep -rn "@harness-js/core" packages/qdrant-client/src` must return
+nothing, **and** the package manifest must not depend on `@harness-js/core` either.
 *Guarded by:* **test** — `architecture.test.ts` checks both. Checking only the
 imports would leave the published package still pulling the core at install
 time; the `tsconfig` project reference has to follow too, or `tsc -b` breaks.
@@ -218,7 +218,7 @@ snapshot, on purpose: a snapshot gets updated without anyone reading the diff,
 which is the exact oversight this guards against. Type-only exports are not
 reachable via `import *`; only `AgentContext` is checked, by source scan.
 
-### R-19 — `ThenaConfig.stores` order is a positional contract
+### R-19 — `HarnessConfig.stores` order is a positional contract
 Without `@memory(Store)`, vector memories are injected into agent constructors
 in array order. Reordering the array silently changes which store an agent
 gets, and TypeScript cannot see it — the parameters have the same type. Append
@@ -268,7 +268,7 @@ with a different name and a `CHANGELOG.md` entry.
 to be quietly violated.
 
 ### R-23 — Test through the public API
-Use `Thena.create` / `runWorkflow` and the `FakeProvider` harness at
+Use `Harness.create` / `runWorkflow` and the `FakeProvider` harness at
 `packages/core/test/harness.ts`. Tests of internal functions break on the first
 file move and remove the safety net exactly when it is needed.
 *Guarded by:* nothing.
@@ -296,7 +296,7 @@ may send one message fewer.
 ## Style rules that are enforced
 
 - `no-throw-literal` is an **error**: always throw an `Error`.
-- Framework-originated errors are prefixed `[thena]`.
+- Framework-originated errors are prefixed `[harness]`.
 - Error messages name the class, the parameter, and the fix (`di/params.ts`).
 - `eqeqeq` is an error (`null` excepted).
 - `printWidth: 88`, Prettier. Markdown is hand-formatted and ignored.

@@ -1,4 +1,4 @@
-import type { Usage } from "@thenajs/agentflow";
+import type { Usage } from "@harness-js/agentflow";
 
 /**
  * Orçamento de uma execução inteira. `maxIterations` limita um loop; isto aqui
@@ -66,7 +66,7 @@ export interface BudgetExceeded {
 export class BudgetExceededError extends Error {
   constructor(public readonly info: BudgetExceeded) {
     super(
-      `[thena] Run budget exhausted (${info.reason}: ${info.value} of ${info.limit}).`,
+      `[harness] Run budget exhausted (${info.reason}: ${info.value} of ${info.limit}).`,
     );
     this.name = "BudgetExceededError";
   }

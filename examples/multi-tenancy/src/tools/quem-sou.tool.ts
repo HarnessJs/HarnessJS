@@ -1,5 +1,5 @@
-import { Tool, context, input } from "@thenajs/core";
-import type { Context } from "@thenajs/core";
+import { Tool, context, input } from "@harness-js/core";
+import type { Context } from "@harness-js/core";
 import { z } from "zod";
 import type { DadosDaConta } from "../execucao";
 

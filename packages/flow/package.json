@@ -1,17 +1,17 @@
 {
-  "name": "@thenajs/flow",
+  "name": "@harness-js/flow",
   "version": "0.13.1",
-  "description": "Visualizador ao vivo da execução de agentes ThenaJS — grafo em tempo real no navegador.",
+  "description": "Visualizador ao vivo da execução de agentes HarnessJS — grafo em tempo real no navegador.",
   "license": "MIT",
   "author": "castroneto",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenajs/ThenaJS.git",
+    "url": "git+https://github.com/HarnessJs/HarnessJS.git",
     "directory": "packages/flow"
   },
-  "homepage": "https://github.com/thenajs/ThenaJS#readme",
+  "homepage": "https://github.com/HarnessJs/HarnessJS#readme",
   "keywords": [
-    "thenajs",
+    "harness-js",
     "agents",
     "observability",
     "reactflow",
@@ -40,7 +40,7 @@
     "prepack": "npm run build:ui"
   },
   "dependencies": {
-    "@thenajs/core": "^0.13.0"
+    "@harness-js/core": "^0.13.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

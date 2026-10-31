@@ -1,5 +1,5 @@
-import { toToolOutput } from "@thenajs/agentflow";
-import type { ToolOutput } from "@thenajs/agentflow";
+import { toToolOutput } from "@harness-js/agentflow";
+import type { ToolOutput } from "@harness-js/agentflow";
 import { BudgetExceededError } from "../budget.js";
 import type { ExecutionNode } from "../observability/recorder.js";
 import type { RunContext } from "../run-context.js";

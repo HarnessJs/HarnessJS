@@ -131,7 +131,7 @@ export function App() {
     <div className="app">
       <aside className="lateral">
         <header className="marca">
-          <h1>Thena Flow</h1>
+          <h1>Harness Flow</h1>
           <span className={`pulso ${conectado ? "pulso--vivo" : ""}`}>
             {conectado ? "ao vivo" : "desconectado"}
           </span>

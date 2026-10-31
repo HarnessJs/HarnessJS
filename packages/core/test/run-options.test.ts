@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Thena } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -9,7 +9,7 @@ import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 describe("opções de run", () => {
   it("memory entra no system prompt enviado ao modelo", async () => {
     const provider = new FakeProvider([{ content: "ok" }]);
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
 
     await app.run({
       prompt: "Olá",
@@ -31,7 +31,7 @@ describe("opções de run", () => {
 
   it("não há canal para dado de execução que não vá para o prompt", async () => {
     const provider = new FakeProvider([{ content: "ok" }]);
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
 
     await app.run({ prompt: "Olá" });
     await app.dispose();

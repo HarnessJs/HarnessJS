@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { Thena, loop } from "@thenajs/core";
-import { ParallelTool } from "@thenajs/tools";
+import { Harness, loop } from "@harness-js/core";
+import { ParallelTool } from "@harness-js/tools";
 import {
   FakeProvider,
   makeAgent,
@@ -64,7 +64,7 @@ describe("ParallelTool", () => {
       ]),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -84,7 +84,7 @@ describe("ParallelTool", () => {
       ]),
     ]);
 
-    const app = Thena.create(Fluxo, {
+    const app = Harness.create(Fluxo, {
       log: (e) => e.phase === "start" && nos.push({ kind: e.kind, name: e.name }),
     });
     await app.run({ prompt: "vai" });
@@ -102,7 +102,7 @@ describe("ParallelTool", () => {
       ]),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -122,7 +122,7 @@ describe("ParallelTool", () => {
       ]),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -138,7 +138,7 @@ describe("ParallelTool", () => {
       ]),
     ]);
 
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     const saida = await app.run({ prompt: "vai" });
     await app.dispose();
 

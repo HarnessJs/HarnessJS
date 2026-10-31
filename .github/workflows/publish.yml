@@ -1,10 +1,10 @@
 name: Publish packages
 
-# Publica os pacotes @thenajs/* no npm público quando você cria uma tag "v*"
+# Publica os pacotes @harness-js/* no npm público quando você cria uma tag "v*"
 # (ex.: git tag v0.1.1 && git push --tags) ou manualmente pela aba Actions.
 #
 # Pré-requisitos:
-#   - Secret NPM_TOKEN (npm automation token, com acesso à org thenajs).
+#   - Secret NPM_TOKEN (npm automation token, com acesso à org harness-js).
 #   - Bump da versão nos package.json antes de taggar (versão já publicada falha).
 
 on:
@@ -84,12 +84,12 @@ jobs:
         run: |
           for pkg in $PACOTES; do
             versao=$(node -p "require('./packages/$pkg/package.json').version")
-            if npm view "@thenajs/$pkg@$versao" version >/dev/null 2>&1; then
-              echo "→ @thenajs/$pkg@$versao já publicado, pulando"
+            if npm view "@harness-js/$pkg@$versao" version >/dev/null 2>&1; then
+              echo "→ @harness-js/$pkg@$versao já publicado, pulando"
               continue
             fi
-            echo "→ publicando @thenajs/$pkg@$versao com dist-tag '$DIST_TAG'"
-            npm publish --workspace "@thenajs/$pkg" \
+            echo "→ publicando @harness-js/$pkg@$versao com dist-tag '$DIST_TAG'"
+            npm publish --workspace "@harness-js/$pkg" \
               --provenance --access public --tag "$DIST_TAG"
           done
         env:

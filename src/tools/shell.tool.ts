@@ -1,4 +1,4 @@
-import { Tool, input } from "@thenajs/core";
+import { Tool, input } from "@harness-js/core";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { z } from "zod";

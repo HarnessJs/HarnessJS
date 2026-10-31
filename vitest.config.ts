@@ -10,10 +10,10 @@ export default defineConfig({
     // seria preciso `npm run build` antes de cada execução, e um teste poderia
     // passar contra um build velho.
     alias: {
-      "@thenajs/agentflow": src("agentflow"),
-      "@thenajs/core": src("core"),
-      "@thenajs/tools": src("tools"),
-      "@thenajs/qdrant-client": src("qdrant-client"),
+      "@harness-js/agentflow": src("agentflow"),
+      "@harness-js/core": src("core"),
+      "@harness-js/tools": src("tools"),
+      "@harness-js/qdrant-client": src("qdrant-client"),
     },
   },
   test: {

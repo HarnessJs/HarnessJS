@@ -40,7 +40,7 @@ export class StateManager {
 
     if (!Array.isArray(list)) {
       throw new Error(
-        `[thena] StateManager.append("${key}"): that bucket is not an array. ` +
+        `[harness] StateManager.append("${key}"): that bucket is not an array. ` +
           `The state has three buckets — history, tasks and memory — and all ` +
           `three are arrays. Something replaced this one, most likely by ` +
           `assigning to \`state.state\` directly.`,

@@ -147,7 +147,7 @@ export function currentRun(): RunContext {
   const ctx = als.getStore();
   if (!ctx) {
     throw new Error(
-      "[thena] No run in progress. Use `Thena.create(...)` and " +
+      "[harness] No run in progress. Use `Harness.create(...)` and " +
         "`app.run(...)`, or `runWorkflow(...)` — the runtime only works inside " +
         "the scope of a run.",
     );
@@ -254,7 +254,7 @@ export async function runCleanups(ctx: RunContext): Promise<void> {
     try {
       await limpar();
     } catch (err) {
-      console.error("[thena] An `onDispose` cleanup failed:", err);
+      console.error("[harness] An `onDispose` cleanup failed:", err);
     }
   }
 }

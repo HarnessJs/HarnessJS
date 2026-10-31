@@ -1,4 +1,4 @@
-// API pública do @thenajs/core — a camada de DX sobre o @thenajs/agentflow.
+// API pública do @harness-js/core — a camada de DX sobre o @harness-js/agentflow.
 
 export { Agent } from "./decorators/agent.decorator.js";
 export { Workflow } from "./decorators/workflow.decorator.js";
@@ -16,9 +16,9 @@ export {
 export { run, runWorkflow } from "./runtime/run-workflow.js";
 export { buildAgentStep } from "./runtime/agent-step.js";
 export { WorkflowRuntime } from "./runtime/workflow-runtime.js";
-export { Thena, bootstrapWorkflow } from "./bootstrap.js";
+export { Harness, bootstrapWorkflow } from "./bootstrap.js";
 export { input, context, state, memory, tools } from "./decorators/inject.js";
-export type { ThenaPlugin } from "./plugin.js";
+export type { HarnessPlugin } from "./plugin.js";
 export type { RunContext, RunMiddleware } from "./run-context.js";
 export type { RunHandle } from "./run-handle.js";
 
@@ -33,7 +33,7 @@ export { BudgetExceededError } from "./budget.js";
 export { FatalToolError } from "./tool-error.js";
 export { DefaultAgentContract } from "./default-agent.contract.js";
 export type { RunBudget, BudgetUsage, BudgetExceeded } from "./budget.js";
-export type { ThenaConfig, ReportOptions, LogConfig } from "./config.js";
+export type { HarnessConfig, ReportOptions, LogConfig } from "./config.js";
 /** Mascaramento de segredo no que vai para o report, o log e os plugins. */
 export { redactSecrets } from "./observability/redact.js";
 export type { RedactConfig } from "./observability/redact.js";
@@ -89,11 +89,15 @@ export {
   VectorStore,
   VectorMemory,
   HttpTransport,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 
 // Ferramentas para escrever um provider próprio: parsers de resposta em texto,
 // normalização de envelope de tool call e o helper de mapeamento de sampling.
-export { parser, normalizeToolCallEnvelope, pruneUndefined } from "@thenajs/agentflow";
+export {
+  parser,
+  normalizeToolCallEnvelope,
+  pruneUndefined,
+} from "@harness-js/agentflow";
 
 export type {
   ToolType,
@@ -110,7 +114,7 @@ export type {
   OllamaCredentials,
   OpenAICredentials,
   SamplingParams,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 
 /**
  * Tipos para escrever um provider próprio.
@@ -128,7 +132,7 @@ export type {
   RetryPolicy,
   RetryAttempt,
   TransportCredentials,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";
 
 /** Memória vetorial: o contrato do store e o que é injetado nos agentes. */
 export type {
@@ -145,4 +149,4 @@ export type {
   RememberOptions,
   ForgetSelector,
   VectorMemoryOptions,
-} from "@thenajs/agentflow";
+} from "@harness-js/agentflow";

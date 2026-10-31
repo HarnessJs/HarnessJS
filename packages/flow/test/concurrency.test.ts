@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Thena } from "@thenajs/core";
-import type { ExecutionEvent } from "@thenajs/core";
+import { Harness } from "@harness-js/core";
+import type { ExecutionEvent } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "../../core/test/harness.js";
 import { RunHistory } from "../src/server/memory.js";
 
@@ -21,8 +21,8 @@ describe("Flow com execuções concorrentes", () => {
     const publish = (e: ExecutionEvent) => history.record(e);
 
     // Um app por workflow, como no uso real; os dois publicam no mesmo Flow.
-    const appA = Thena.create(fluxoLento(30, "A"), { log: publish });
-    const appB = Thena.create(fluxoLento(5, "B"), { log: publish });
+    const appA = Harness.create(fluxoLento(30, "A"), { log: publish });
+    const appB = Harness.create(fluxoLento(5, "B"), { log: publish });
 
     const [a, b] = await Promise.all([
       appA.run({ prompt: "a" }),
@@ -62,8 +62,8 @@ describe("Flow com execuções concorrentes", () => {
       ),
     ]);
 
-    const appOk = Thena.create(fluxoLento(20, "ok"), { log: publish });
-    const appRuim = Thena.create(Quebrado, { log: publish });
+    const appOk = Harness.create(fluxoLento(20, "ok"), { log: publish });
+    const appRuim = Harness.create(Quebrado, { log: publish });
 
     const [ok, ruim] = await Promise.all([
       appOk.run({ prompt: "a" }),

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HttpTransport } from "@thenajs/agentflow";
-import type { RetryPolicy, RetryAttempt } from "@thenajs/agentflow";
+import { HttpTransport } from "@harness-js/agentflow";
+import type { RetryPolicy, RetryAttempt } from "@harness-js/agentflow";
 
 /**
  * O laço de retry — o caminho por onde passa **todo** tráfego de rede do

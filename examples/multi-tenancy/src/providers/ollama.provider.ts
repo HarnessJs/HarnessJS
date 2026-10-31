@@ -1,4 +1,4 @@
-import { OllamaProvider, context } from "@thenajs/core";
+import { OllamaProvider, context } from "@harness-js/core";
 import type { DadosDaConta } from "../execucao";
 
 /** O modelo de cada tenant. */

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { QdrantStore } from "@thenajs/qdrant-client";
+import { QdrantStore } from "@harness-js/qdrant-client";
 
 /**
  * O único código do repositório que fala HTTP com um serviço de terceiro — e o

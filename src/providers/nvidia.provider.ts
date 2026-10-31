@@ -1,4 +1,4 @@
-import { OpenAIProvider } from "@thenajs/core";
+import { OpenAIProvider } from "@harness-js/core";
 
 /**
  * Provider do smoke test, apontado para a API da NVIDIA — compatível com o

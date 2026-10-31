@@ -15,24 +15,24 @@ the **legacy** ones (`experimentalDecorators: true`), Node >= 20.19.
                         zod
                          ▲
                          │
-              @thenajs/agentflow          ── the ENGINE
+              @harness-js/agentflow          ── the ENGINE
                          ▲
                          │
-                 @thenajs/core            ── the FRAMEWORK
+                 @harness-js/core            ── the FRAMEWORK
                     ▲         ▲
                     │         │
-      @thenajs/flow │         │ @thenajs/qdrant-client
+      @harness-js/flow │         │ @harness-js/qdrant-client
                               
-                 @thenajs/cli             ── depends on nothing
+                 @harness-js/cli             ── depends on nothing
 ```
 
 | Package | Role | Published |
 |---|---|---|
-| `@thenajs/agentflow` | Pipeline, state, providers, HTTP transport, tool types, vector contracts, markdown helpers | yes |
-| `@thenajs/core` | Decorators, DI, run context, runtime, middleware, budget, observability | yes |
-| `@thenajs/qdrant-client` | `VectorStore` implementation over Qdrant's REST API | yes |
-| `@thenajs/flow` | Live execution viewer: SSE server + React UI | yes |
-| `@thenajs/cli` | `thena create`, `thena g agent` | yes |
+| `@harness-js/agentflow` | Pipeline, state, providers, HTTP transport, tool types, vector contracts, markdown helpers | yes |
+| `@harness-js/core` | Decorators, DI, run context, runtime, middleware, budget, observability | yes |
+| `@harness-js/qdrant-client` | `VectorStore` implementation over Qdrant's REST API | yes |
+| `@harness-js/flow` | Live execution viewer: SSE server + React UI | yes |
+| `@harness-js/cli` | `harness create`, `harness g agent` | yes |
 | `src/` (repo root) | Demo application consuming the framework | no |
 | `examples/multi-tenancy` | Standalone example, **outside the workspace** | no |
 
@@ -45,13 +45,13 @@ order: `agentflow → core → qdrant-client → flow → cli`.
 
 This is the decision that shapes everything else (ADR-001).
 
-**`@thenajs/agentflow` is mechanism.** It knows how to run steps, hold state,
+**`@harness-js/agentflow` is mechanism.** It knows how to run steps, hold state,
 speak HTTP to a model, parse a response, execute a tool. It has *no opinion*
 about what should happen when things go wrong, what a run may cost, or what
 gets recorded. It knows nothing about `AsyncLocalStorage`, decorators, budgets
 or reports.
 
-**`@thenajs/core` is policy.** Tool failure becomes an observation — decided
+**`@harness-js/core` is policy.** Tool failure becomes an observation — decided
 here. A loop stops after 10 iterations — decided here. A run has a ceiling —
 here. What lands in the report — here.
 
@@ -74,8 +74,8 @@ See RULES.md R-01.
 ## 3. Execution flow
 
 ```
-Thena.create(WorkflowClass, config)        synchronous — building an app awaits nothing
-  │  instantiates ThenaConfig.stores ONCE, shared by every run
+Harness.create(WorkflowClass, config)        synchronous — building an app awaits nothing
+  │  instantiates HarnessConfig.stores ONCE, shared by every run
   │
   └─ app.run(options) ──────────────────▶ returns RunHandle synchronously
        │                                   (thenable; runId available immediately)
@@ -183,7 +183,7 @@ Ranked by how much the framework expects you to use them.
 | `@Tool` class | `execute(...)`, params via `@input`/`@context`/`@state`/`@memory` | The main one. |
 | Agent hooks | `beforePrompt`, `beforeTool`, `afterTool`, `afterResponse`, `onError` on the agent class | Return a value to replace, `undefined` to keep. |
 | Agent escape hatch | define `run(input, ctx)` on the agent class | Takes full control; automatic hooks are **not** called. |
-| `ThenaPlugin` | `app.use({ name, setup, onEvent, tool, chat, dispose })` | `onEvent` observes; `tool`/`chat` participate. |
+| `HarnessPlugin` | `app.use({ name, setup, onEvent, tool, chat, dispose })` | `onEvent` observes; `tool`/`chat` participate. |
 | Custom provider | `extends Providers`, implement `chatInternal` | Base class handles rescue, validation, tool execution, cost. |
 | Custom vector store | `extends VectorStore` | Inherits retry/timeout from `HttpTransport`. |
 | Provider as factory | `provider: () => new X(...)` in `@Agent` | Called **per run**, inside run scope — can read `context().data`. |

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { ExecutionEvent } from "@thenajs/core";
+import type { ExecutionEvent } from "@harness-js/core";
 import type { FlowEvent, FlowRun, FlowSnapshot } from "../types.js";
 
 /**

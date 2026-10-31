@@ -1,4 +1,9 @@
-import type { ChatTurn, Message, SamplingParams, ToolType } from "@thenajs/agentflow";
+import type {
+  ChatTurn,
+  Message,
+  SamplingParams,
+  ToolType,
+} from "@harness-js/agentflow";
 import type { ExecutionNode } from "../observability/recorder.js";
 import type { RunContext } from "../run-context.js";
 import type { AgentContext } from "../types.js";

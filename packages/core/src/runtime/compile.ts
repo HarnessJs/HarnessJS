@@ -1,5 +1,5 @@
-import { Pipeline } from "@thenajs/agentflow";
-import type { PipelineContext, Step } from "@thenajs/agentflow";
+import { Pipeline } from "@harness-js/agentflow";
+import type { PipelineContext, Step } from "@harness-js/agentflow";
 import { currentRun, throwIfAborted } from "../run-context.js";
 import type { LoopStopReason, WorkflowContext, WorkflowStep } from "../types.js";
 import { buildAgentStep } from "./agent-step.js";
@@ -41,7 +41,7 @@ export function compileStep(
   // na primeira leitura de campo — sem dizer o que faltou.
   if (step.until.length >= 2 && !workflowState) {
     throw new Error(
-      `[thena] This loop's \`until\` takes the state as its 2nd parameter, ` +
+      `[harness] This loop's \`until\` takes the state as its 2nd parameter, ` +
         `but the workflow declares no \`state\`. Add \`state: MyClass\` to the ` +
         `@Workflow, or use an \`until\` that only reads ctx.`,
     );

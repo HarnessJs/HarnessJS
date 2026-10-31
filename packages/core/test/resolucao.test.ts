@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { runWorkflow } from "@thenajs/core";
-import type { ToolType } from "@thenajs/core";
+import { runWorkflow } from "@harness-js/core";
+import type { ToolType } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeTool, makeWorkflow } from "./harness.js";
 
 /** Como `@Agent({ provider, tools })` vira instância na hora de executar. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Thena, loop, untilAnswered } from "@thenajs/core";
+import { Harness, loop, untilAnswered } from "@harness-js/core";
 import { FakeProvider, makeAgent, makeWorkflow } from "./harness.js";
 
 /**
@@ -19,7 +19,7 @@ function fluxo(...respostas: string[]) {
 describe("onToken", () => {
   it("entrega o texto em pedaços, na ordem", async () => {
     const { Fluxo } = fluxo("Olá mundo bonito");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const pedacos: string[] = [];
     const exec = app.run({ prompt: "vai", observe: true });
@@ -34,7 +34,7 @@ describe("onToken", () => {
 
   it("quem assina atrasado recebe o texto que já saiu", async () => {
     const { Fluxo } = fluxo("um dois tres");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     await exec; // assina só depois de tudo pronto
@@ -59,7 +59,7 @@ describe("onToken", () => {
         maxIterations: 5,
       }),
     ]);
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const pedacos: string[] = [];
@@ -75,7 +75,7 @@ describe("onToken", () => {
     // emite tudo de forma síncrona durante o `run()`, e o que se veria seria o
     // replay do buffer, não a entrega ao vivo.
     const provider = new FakeProvider([{ content: "a b c d e" }], { delayMs: 20 });
-    const app = Thena.create(makeWorkflow([makeAgent({ provider })]), {});
+    const app = Harness.create(makeWorkflow([makeAgent({ provider })]), {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const pedacos: string[] = [];
@@ -89,7 +89,7 @@ describe("onToken", () => {
 
   it("um assinante que lança não derruba a execução", async () => {
     const { Fluxo } = fluxo("intacto");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     exec.onToken(() => {
@@ -104,7 +104,7 @@ describe("onToken", () => {
 describe("textStream", () => {
   it("percorre o texto com for await e termina junto com a execução", async () => {
     const { Fluxo } = fluxo("um dois tres");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const pedacos: string[] = [];
@@ -116,7 +116,7 @@ describe("textStream", () => {
 
   it("é um canal separado do eventStream", async () => {
     const { Fluxo } = fluxo("texto");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
 
     const exec = app.run({ prompt: "vai", observe: true });
     const events: unknown[] = [];
@@ -135,7 +135,7 @@ describe("textStream", () => {
 describe("o sink é o que liga o streaming", () => {
   it("com observe, o provider recebe o sink e transmite", async () => {
     const { provider, Fluxo } = fluxo("x");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "vai", observe: true }).result;
     await app.dispose();
 
@@ -144,7 +144,7 @@ describe("o sink é o que liga o streaming", () => {
 
   it("SEM observador, o provider NÃO recebe sink — nada de stream à toa", async () => {
     const { provider, Fluxo } = fluxo("x");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.run({ prompt: "vai" });
     await app.dispose();
 
@@ -156,7 +156,7 @@ describe("o sink é o que liga o streaming", () => {
 
   it("um plugin que observa também liga o streaming", async () => {
     const { provider, Fluxo } = fluxo("x");
-    const app = Thena.create(Fluxo, {});
+    const app = Harness.create(Fluxo, {});
     await app.use({ name: "olheiro", onEvent: () => {} });
     await app.run({ prompt: "vai" });
     await app.dispose();
@@ -165,7 +165,7 @@ describe("o sink é o que liga o streaming", () => {
   });
 
   it("runWorkflow direto, sem app, não transmite", async () => {
-    const { runWorkflow } = await import("@thenajs/core");
+    const { runWorkflow } = await import("@harness-js/core");
     const { provider, Fluxo } = fluxo("x");
 
     await runWorkflow(Fluxo, "vai");

@@ -50,7 +50,7 @@ jobs:
       # Sem esta etapa, um erro de tipo na interface chega ao npm — foi assim
       # que três bugs de rename foram publicados na 0.9.0.
       - name: Typecheck da UI do Flow
-        run: npm run typecheck:ui --workspace @thenajs/flow
+        run: npm run typecheck:ui --workspace @harness-js/flow
       # `test:coverage` no lugar de `test`: roda a mesma suíte e ainda reprova
       # se a cobertura cair abaixo da linha de base medida. Um só passo, porque
       # dois rodariam os mesmos 477 testes duas vezes.

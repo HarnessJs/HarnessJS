@@ -1,20 +1,20 @@
-# @thenajs/flow
+# @harness-js/flow
 
 Visualizador ao vivo da execução dos seus agentes. Sobe um site local que
 desenha, em tempo real, a árvore do que está rodando — workflow, loops, agentes,
 chamadas ao modelo e tools — com o prompt e a resposta de cada passo.
 
 ```bash
-npm install @thenajs/flow
+npm install @harness-js/flow
 ```
 
 ```ts
-import { Thena } from "@thenajs/core";
-import { thenaFlow } from "@thenajs/flow";
+import { Harness } from "@harness-js/core";
+import { harnessFlow } from "@harness-js/flow";
 import { MeuWorkflow } from "./workflows/meu.workflow.js";
 
-const app = Thena.create(MeuWorkflow, { log: true });
-await app.use(thenaFlow());
+const app = Harness.create(MeuWorkflow, { log: true });
+await app.use(harnessFlow());
 
 await app.run({ prompt: "Olá" });
 ```
@@ -42,7 +42,7 @@ acompanha a mais recente sozinho, a menos que você clique numa antiga.
 
 ```ts
 await app.use(
-  thenaFlow({
+  harnessFlow({
     port: 4100,        // porta do site
     host: "127.0.0.1", // interface de escuta — local, de propósito
     maxRuns: 20,       // execuções mantidas em memória
@@ -55,13 +55,13 @@ await app.use(
 
 **Nada é persistido.** O histórico vive na memória do processo. Fechou, acabou.
 Para um arquivo que sobrevive à execução, use o
-[report](https://thenajs.github.io/guias/report) — os dois funcionam juntos.
+[report](https://harnessjs.github.io/guias/report) — os dois funcionam juntos.
 
 **O processo fica aberto depois do `run`.** É o que dá tempo de olhar o
 resultado. Encerre com `Ctrl+C`, ou chame `await app.dispose()` quando quiser que
 o script termine sozinho.
 
-**Ele não toma o lugar do seu `log`.** O `log` do `ThenaConfig` continua
+**Ele não toma o lugar do seu `log`.** O `log` do `HarnessConfig` continua
 funcionando junto; vários plugins também coexistem.
 
 **Escuta só em `127.0.0.1`.** O prompt e a resposta de cada passo passam por ali,
@@ -70,13 +70,13 @@ faça só se souber por quê.
 
 ## Escrever o seu próprio plugin
 
-`thenaFlow()` é só um `ThenaPlugin`. O mesmo stream está aberto para qualquer
+`harnessFlow()` é só um `HarnessPlugin`. O mesmo stream está aberto para qualquer
 destino — um Datadog, um arquivo, um webhook:
 
 ```ts
-import type { ThenaPlugin } from "@thenajs/core";
+import type { HarnessPlugin } from "@harness-js/core";
 
-export function meuPlugin(): ThenaPlugin {
+export function meuPlugin(): HarnessPlugin {
   return {
     name: "meu-plugin",
     setup: () => conectar(),
