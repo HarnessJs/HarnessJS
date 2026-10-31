@@ -50,6 +50,13 @@ toda tool call ganha o id quando nasce, o mesmo no pedido e no resultado.
   que depende de `@harness-js/core`). Antes, criava `src/` em qualquer pasta.
 - `harness g agent` não sobrescreve mais um `src/contracts/<nome>.contract.ts`
   que já exista.
+- Comando errado diz o que deu errado em uma linha, com sugestão para erro de
+  digitação (`harness creat` → `Você quis dizer "create"?`), em vez de
+  imprimir a ajuda inteira sem explicar.
+- A ajuda alinha as descrições das opções com as dos comandos.
+- O `src/main.ts` gerado mostra só a mensagem quando a run falha (antes, uma
+  pilha de dez linhas), sai com código 1 e chama `app.dispose()` mesmo na
+  falha.
 
 ### Mudança — `parallel_tool_calls: false` na OpenAI
 

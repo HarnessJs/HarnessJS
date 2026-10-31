@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { invalidNameReason, isHarnessProject } from "./checks.js";
+import { didYouMean, invalidNameReason, isHarnessProject } from "./checks.js";
 import {
   agentContractTsTemplate,
   agentMdTemplate,
@@ -27,8 +27,8 @@ Uso:
   harness g agent <nome>       Gera um agente em src/agents/<nome>/ (dentro do projeto)
 
 Opções:
-  -v, --version              Mostra a versão
-  -h, --help                 Mostra esta ajuda
+  -v, --version                Mostra a versão
+  -h, --help                   Mostra esta ajuda
 
 Exemplos:
   harness create my-agent
@@ -114,23 +114,35 @@ function main(): void {
 
   if (command === "create" || command === "new") {
     const name = rest[0];
-    if (!name) {
-      console.error("Erro: informe o nome do projeto. Ex.: harness create my-agent");
-      process.exit(1);
-    }
+    if (!name) fail("informe o nome do projeto. Ex.: harness create my-agent");
     create(name);
     return;
   }
 
   if (command === "g" || command === "generate") {
     const [type, name] = rest;
-    if (type === "agent" && name) {
-      generateAgent(name);
-      return;
+    if (!type) fail("informe o que gerar. Ex.: harness g agent explorer");
+    if (type !== "agent") {
+      fail(
+        `não sei gerar "${type}". Hoje existe: agent.${didYouMean(type, ["agent"])}`,
+      );
     }
+    if (!name) fail("informe o nome do agente. Ex.: harness g agent explorer");
+    generateAgent(name);
+    return;
   }
 
-  usage();
+  fail(`comando desconhecido "${command}".${didYouMean(command, COMMANDS)}`);
+}
+
+const COMMANDS = ["create", "new", "g", "generate"];
+
+/**
+ * Diz o que deu errado em uma linha e aponta a ajuda. A ajuda inteira no lugar
+ * do erro escondia o motivo: quem digitou `creat` via o uso, não o engano.
+ */
+function fail(message: string): never {
+  console.error(`Erro: ${message}\nUse harness --help para ver os comandos.`);
   process.exit(1);
 }
 

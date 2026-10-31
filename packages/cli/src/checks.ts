@@ -50,3 +50,32 @@ export function isHarnessProject(dir: string): boolean {
     return false;
   }
 }
+
+/**
+ * ` Você quis dizer "x"?` para um erro de digitação; vazio quando nada é
+ * parecido. A tolerância cresce com o tamanho da opção: com um teto fixo de 2,
+ * qualquer entrada de duas letras ficava "parecida" com `g`.
+ */
+export function didYouMean(input: string, options: string[]): string {
+  const near = options.find(
+    (option) => distance(input, option) <= Math.min(2, Math.floor(option.length / 3)),
+  );
+  return near ? ` Você quis dizer "${near}"?` : "";
+}
+
+/** Distância de edição (Levenshtein): quantas letras trocar, pôr ou tirar. */
+function distance(a: string, b: string): number {
+  let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const current = [i];
+    for (let j = 1; j <= b.length; j++) {
+      current[j] = Math.min(
+        previous[j]! + 1,
+        current[j - 1]! + 1,
+        previous[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[b.length]!;
+}
