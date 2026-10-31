@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/flow",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Visualizador ao vivo da execução de agentes HarnessJS — grafo em tempo real no navegador.",
   "license": "MIT",
   "author": "castroneto",
@@ -40,7 +40,7 @@
     "prepack": "npm run build:ui"
   },
   "dependencies": {
-    "@harness-js/core": "^0.13.0"
+    "@harness-js/core": "^0.14.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

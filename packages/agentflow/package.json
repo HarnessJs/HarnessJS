@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/agentflow",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Engine de execução do HarnessJS: pipeline, providers (Ollama/OpenAI), estado e tools (Zod).",
   "license": "MIT",
   "author": "castroneto",

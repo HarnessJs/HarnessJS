@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/cli",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "CLI do HarnessJS: cria projetos (harness create) e gera agentes (harness g agent).",
   "license": "MIT",
   "author": "castroneto",

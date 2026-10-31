@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/tools",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Tools prontas para agentes HarnessJS (ex.: ParallelTool).",
   "license": "MIT",
   "author": "castroneto",
@@ -26,7 +26,7 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@harness-js/core": "^0.13.0"
+    "@harness-js/core": "^0.14.0"
   },
   "peerDependencies": {
     "zod": "^4.0.0"

@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/core",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Camada de DX do HarnessJS: decorators (@Agent/@Workflow/@Tool) e runtime sobre o @harness-js/agentflow.",
   "license": "MIT",
   "author": "castroneto",
@@ -27,7 +27,7 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@harness-js/agentflow": "^0.13.0"
+    "@harness-js/agentflow": "^0.14.0"
   },
   "peerDependencies": {
     "zod": "^4.0.0"
