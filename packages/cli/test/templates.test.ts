@@ -92,6 +92,15 @@ describe("o projeto gerado", () => {
     expect(pkg.dependencies["@harness-js/core"]).toBe(versaoDoCli);
   });
 
+  it("o main.ts trata a falha da run e libera o app mesmo assim", () => {
+    // Sem o catch, um modelo ausente no Ollama virava uma pilha de dez linhas
+    // no primeiro `npm start` — parecia bug do framework.
+    const main = arquivo("app", "src/main.ts");
+    expect(main).toContain("bootstrap().catch(");
+    expect(main).toContain("process.exitCode = 1");
+    expect(main).toMatch(/finally \{\s*await app\.dispose\(\);/);
+  });
+
   it("o tsconfig liga os decorators, sem os quais o @Agent não compila", () => {
     const ts = JSON.parse(arquivo("app", "tsconfig.json"));
     expect(ts.compilerOptions.experimentalDecorators).toBe(true);

@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { invalidNameReason, isHarnessProject } from "../src/checks.js";
+import { didYouMean, invalidNameReason, isHarnessProject } from "../src/checks.js";
 
 /**
  * O nome digitado vira caminho, `package.json` e nome de classe. Cada caso
@@ -51,5 +51,22 @@ describe("isHarnessProject", () => {
     expect(isHarnessProject(dir())).toBe(false);
     expect(isHarnessProject(dir('{"dependencies":{"react":"19"}}'))).toBe(false);
     expect(isHarnessProject(dir("{ não é json"))).toBe(false);
+  });
+});
+
+describe("didYouMean", () => {
+  const commands = ["create", "new", "g", "generate"];
+
+  it.each([
+    ["creat", "create"],
+    ["crate", "create"],
+    ["genrate", "generate"],
+  ])("sugere para o erro de digitação %s", (input, expected) => {
+    expect(didYouMean(input, commands)).toBe(` Você quis dizer "${expected}"?`);
+  });
+
+  // Com tolerância fixa, toda entrada curta era "parecida" com `g`.
+  it.each(["ab", "x", "xpto"])("não sugere nada para %s", (input) => {
+    expect(didYouMean(input, commands)).toBe("");
   });
 });

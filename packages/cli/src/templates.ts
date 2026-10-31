@@ -182,13 +182,20 @@ async function bootstrap() {
   // \`create\` não é async — quem espera é o \`run\`.
   const app = Harness.create(AssistantWorkflow, config);
 
-  // O \`run\` devolve a saída e propaga o erro — quem imprime é a aplicação.
-  console.log(await app.run({ prompt }));
-
-  await app.dispose();
+  try {
+    // O \`run\` devolve a saída e propaga o erro — quem imprime é a aplicação.
+    console.log(await app.run({ prompt }));
+  } finally {
+    await app.dispose();
+  }
 }
 
-bootstrap();
+// Só a mensagem: para quem acabou de rodar \`npm start\`, a pilha inteira parece
+// bug do framework. Troque por \`console.error(error)\` quando precisar dela.
+bootstrap().catch((error: unknown) => {
+  console.error(\`Erro: \${error instanceof Error ? error.message : String(error)}\`);
+  process.exitCode = 1;
+});
 `,
     },
     {
