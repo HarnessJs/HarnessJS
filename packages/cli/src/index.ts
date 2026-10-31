@@ -2,6 +2,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { invalidNameReason, isHarnessProject } from "./checks.js";
 import {
   agentContractTsTemplate,
   agentMdTemplate,
@@ -43,7 +44,17 @@ function write(root: string, path: string, content: string): void {
   console.log(`  CREATE ${relative(process.cwd(), full)}`);
 }
 
+/** Para com uma mensagem quando o nome não serve, antes de qualquer arquivo. */
+function requireValidName(name: string): void {
+  const reason = invalidNameReason(name);
+  if (reason) {
+    console.error(`Erro: ${reason}`);
+    process.exit(1);
+  }
+}
+
 function create(name: string): void {
+  requireValidName(name);
   const dir = join(process.cwd(), name);
   if (existsSync(dir)) {
     console.error(`Erro: o diretório "${name}" já existe.`);
@@ -62,18 +73,30 @@ function create(name: string): void {
 }
 
 function generateAgent(name: string): void {
-  const base = join(process.cwd(), "src", "agents", name);
-  if (existsSync(base)) {
-    console.error(`Erro: o agente já existe em ${relative(process.cwd(), base)}`);
+  requireValidName(name);
+  if (!isHarnessProject(process.cwd())) {
+    console.error(
+      "Erro: rode este comando na raiz de um projeto HarnessJS " +
+        "(a pasta com o package.json que depende de @harness-js/core).",
+    );
     process.exit(1);
   }
+
+  const base = join(process.cwd(), "src", "agents", name);
+  const contracts = join(process.cwd(), "src", "contracts");
+  // Confere tudo antes de escrever qualquer coisa: o contrato vive fora da
+  // pasta do agente, e um `<nome>.contract.ts` que já existisse era
+  // sobrescrito em silêncio.
+  for (const path of [base, join(contracts, `${name}.contract.ts`)]) {
+    if (existsSync(path)) {
+      console.error(`Erro: já existe ${relative(process.cwd(), path)}`);
+      process.exit(1);
+    }
+  }
+
   write(base, `${name}.agent.ts`, agentTsTemplate(name));
   write(base, `${name}.agent.md`, agentMdTemplate(name));
-  write(
-    join(process.cwd(), "src", "contracts"),
-    `${name}.contract.ts`,
-    agentContractTsTemplate(name),
-  );
+  write(contracts, `${name}.contract.ts`, agentContractTsTemplate(name));
 }
 
 function main(): void {

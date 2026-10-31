@@ -39,6 +39,18 @@ OpenAI, diferente a cada turno, e o resultado da tool ia sem `toolCallId`: um
 history vindo de um agente Ollama virava `400` no agente OpenAI seguinte. Agora
 toda tool call ganha o id quando nasce, o mesmo no pedido e no resultado.
 
+### 🐛 Correção — a CLI confere o nome e o lugar antes de criar arquivos
+
+- `harness create` e `harness g agent` aceitam só letras minúsculas, números e
+  hífen, começando por letra (`meu-app`, `code-reviewer`). Antes, `../fora`
+  criava o projeto fora da pasta atual, com `"name": "../fora"` no
+  `package.json`, e `"Code Reviewer"` gerava arquivos com espaço. O erro sugere
+  o nome corrigido.
+- `harness g agent` só roda na raiz de um projeto HarnessJS (um `package.json`
+  que depende de `@harness-js/core`). Antes, criava `src/` em qualquer pasta.
+- `harness g agent` não sobrescreve mais um `src/contracts/<nome>.contract.ts`
+  que já exista.
+
 ### Mudança — `parallel_tool_calls: false` na OpenAI
 
 O framework atende uma tool call por turno (ADR-025), mas não avisava a API: o
