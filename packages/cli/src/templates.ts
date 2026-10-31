@@ -72,7 +72,7 @@ export interface ScaffoldFile {
 }
 
 /** Versões dos pacotes @harness-js referenciadas pelo projeto gerado. */
-const HARNESS_VERSION = "0.13.1";
+const HARNESS_VERSION = "0.14.0";
 
 /** Todos os arquivos de um projeto HarnessJS novo. */
 export function projectFiles(name: string): ScaffoldFile[] {

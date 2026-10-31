@@ -1,6 +1,6 @@
 {
   "name": "@harness-js/qdrant-client",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Cliente Qdrant nativo para HarnessJS — implementação de VectorStore sobre a API REST, sem SDK.",
   "license": "MIT",
   "author": "castroneto",
@@ -34,6 +34,6 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@harness-js/agentflow": "^0.13.0"
+    "@harness-js/agentflow": "^0.14.0"
   }
 }
